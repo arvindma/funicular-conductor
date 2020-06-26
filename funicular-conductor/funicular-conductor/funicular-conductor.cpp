@@ -16,12 +16,20 @@ int main()
     
     if (mode == 1) //Controller Mode
     {
-        printf("YAY! CONTROLLERS");
+        printf("YAY! CONTROLLERS\n");
     }
     
     if (mode == 2) //Position Mode
     {
-        printf("YAY! POSITION");
+        printf("YAY! POSITION\n");
+    }
+
+    printf("Press q to exit\n");
+    string end;
+    cin >> end;
+    while (end != "q") {
+        printf("That wasn't q...\n");
+        cin >> end;
     }
 }
 
