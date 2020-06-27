@@ -142,6 +142,9 @@
   <ItemGroup>
     <ClCompile Include="funicular-conductor.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="controller.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

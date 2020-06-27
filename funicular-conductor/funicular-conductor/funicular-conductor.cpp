@@ -4,13 +4,13 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <windows.h>
-#include <Xinput.h>
+#include "controller.h"
 
 using namespace std;
 //Declarations
 bool isOneDigitIntBetween(string str, int bottom, int top);
 int askForMode(string modeOptions, int bottom, int top);
+
 
 int main()
 {
@@ -20,61 +20,23 @@ int main()
     if (mode == 1) //Controller Mode
     {
         printf("YAY! CONTROLLERS\n");
-        XINPUT_STATE state;
-        DWORD controllerConnected = XInputGetState(0, &state);
-
-        while(controllerConnected != ERROR_SEVERITY_SUCCESS)
-        {
-            printf("pLuG iN tHE cOntrOlLeR, and restart the prgm becuz arvind dont no how 2 code\n");
-            cin.get();
-            DWORD controllerConnected = XInputGetState(0, &state);
-        }
-        printf("YAY\n");
-        while (1)
-        {
-            XINPUT_STATE state;
-            DWORD controllerConnected = XInputGetState(0, &state);
-            float INPUT_DEADZONE = 1000;
-            float LX = state.Gamepad.sThumbLX;
-            float LY = state.Gamepad.sThumbLY;
-
-            //determine how far the controller is pushed
-            float magnitude = sqrt(LX * LX + LY * LY);
-
-            //determine the direction the controller is pushed
-            
-
-            float normalizedMagnitude = 0;
-            float angle = tan(LY / LX);
-            //check if the controller is outside a circular dead zone
-            if (magnitude > INPUT_DEADZONE)
-            {
-                //clip the magnitude at its expected maximum value
-                if (magnitude > 32767) magnitude = 32767;
-
-                //adjust magnitude relative to the end of the dead zone
-                magnitude -= INPUT_DEADZONE;
-
-                //optionally normalize the magnitude with respect to its expected range
-                //giving a magnitude value of 0.0 to 1.0
-                normalizedMagnitude = magnitude / (32767 - INPUT_DEADZONE);
-            }
-            else //if the controller is in the deadzone zero out the magnitude
-            {
-                magnitude = 0.0;
-                normalizedMagnitude = 0.0;
-            }
-            cout << magnitude << endl;
-            cout << normalizedMagnitude << endl;
-            cout << "ANGLE:" << angle/(2*3.1415926535)*360 << endl;
-            Sleep(500);
-
-            if (normalizedMagnitude > 0.99)
-            {
-                break;
-            }
-        }
         
+        printf("YAY\n");
+        printf("PRESS B TO EXIT\n");
+        controllerInfo controller1;
+        if (&controllerInfo::connectionCheck) 
+        {
+            while (&controllerInfo::connectionCheck)
+            {
+                printf("LEFT\n");
+                cout << controller1.JoystickMagnitude('L') << endl;
+                cout << controller1.joystickAngle('L') / (2 * 3.1415926535) * 360 << endl;
+                printf("RIGHT\n");
+                cout << controller1.JoystickMagnitude('R') << endl;
+                cout << controller1.joystickAngle('R') / (2 * 3.1415926535) * 360 << endl;
+                Sleep(200);
+            }
+        }
 
     }
     
@@ -85,10 +47,10 @@ int main()
 
     printf("Press q to exit\n");
     string end;
-    cin >> end;
+    std::cin >> end;
     while (end != "q") {
         printf("That wasn't q...\n");
-        cin >> end;
+        std::cin >> end;
     }
 }
 
@@ -118,6 +80,7 @@ int askForMode(string modeOptions, int bottom, int top)
 
     return strtol(modeIn.c_str(),NULL,10);
 }
+
 
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

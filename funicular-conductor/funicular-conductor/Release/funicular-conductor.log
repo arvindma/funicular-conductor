@@ -1,7 +1,7 @@
 ﻿  funicular-conductor.cpp
   Generating code
-  0 of 136 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+  7 of 138 functions ( 5.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    8 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   funicular-conductor.vcxproj -> C:\Users\PC\Documents\funicular-conductor\funicular-conductor\Release\funicular-conductor.exe
