@@ -1,47 +1,53 @@
 // funicular-conductor.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include <iostream>
+#pragma once
 #include <string>
 #include <sstream>
 #include "controller.h"
+#include "modeSelector.h"
+#include "botToModuleMath.h"
 
 using namespace std;
+
 //Declarations
+int main();
 bool isOneDigitIntBetween(string str, int bottom, int top);
 int askForMode(string modeOptions, int bottom, int top);
 
 
-int main()
-{
+int main() {
     string controlOptions = "1.Controller Mode\n2.Position Mode\n";
     int mode = askForMode(controlOptions,1,2);
     
-    if (mode == 1) //Controller Mode
-    {
+    if (mode == 1) {//Controller Mode 
         printf("YAY! CONTROLLERS\n");
-        
-        printf("YAY\n");
-        printf("PRESS B TO EXIT\n");
+
         controllerInfo controller1;
-        if (&controllerInfo::connectionCheck) 
-        {
-            while (&controllerInfo::connectionCheck)
-            {
+        const float moduleDistFromOrigin = 10.0;
+        polarCoordinates module1p(moduleDistFromOrigin, M_PI / 2);
+        polarCoordinates module2p(moduleDistFromOrigin, M_PI / 2 + M_PI * 2 / 3);
+        polarCoordinates module3p(moduleDistFromOrigin, M_PI / 2 + M_PI * 4 / 3);
+
+        if (controller1.controllerCheck()) {
+            while (controller1.controllerCheck()) {
                 printf("LEFT\n");
-                cout << controller1.JoystickMagnitude('L') << endl;
-                cout << controller1.joystickAngle('L') / (2 * 3.1415926535) * 360 << endl;
-                printf("RIGHT\n");
-                cout << controller1.JoystickMagnitude('R') << endl;
-                cout << controller1.joystickAngle('R') / (2 * 3.1415926535) * 360 << endl;
-                Sleep(200);
+                velocity tS = velocity::joystickToVelocity(controller1.joystickMagnitude('L'), controller1.joystickAngle('L'));
+                float rS = controller1.joystickMagnitude('R');/*Add radians per sec*/
+                polarCoordinates cR(0, 0);
+                
+                velocity module1v = velocity::botToWheelVelocity(module1p, cR, rS, tS);
+                velocity module2v = velocity::botToWheelVelocity(module2p, cR, rS, tS);
+                velocity module3v = velocity::botToWheelVelocity(module3p, cR, rS, tS);
+                printf("Module 1 Angle and Speed: %f, %f\n", module1v.speed, module1v.angle/(2*M_PI)*360);
+                printf("Module 2 Angle and Speed: %f, %f\n", module2v.speed, module2v.angle / (2 * M_PI) * 360);
+                printf("Module 3 Angle and Speed: %f, %f\n", module3v.speed, module3v.angle / (2 * M_PI) * 360);
+                Sleep(500);
             }
         }
-
     }
     
-    if (mode == 2) //Position Mode
-    {
+    if (mode == 2) { //Position Mode
         printf("YAY! POSITION\n");
     }
 
@@ -53,43 +59,3 @@ int main()
         std::cin >> end;
     }
 }
-
-bool isOneDigitIntBetween(const string str,int bottom, int top)
-{
-    
-    int i = strtol(str.c_str(),NULL,10);
-    return str.length() == 1 && (bottom) <= i && i <= (top);    
-}
-
-int askForMode(string modeOptions, int bottom, int top)
-{
-    cout << modeOptions;
-
-    string modeIn;
-    cin >> modeIn;
-
-    while (isOneDigitIntBetween(modeIn, bottom, top) == false)
-    {
-        printf("Whoops... Enter a number between %d and %d\n",bottom,top);
-        cin >> modeIn;
-        if (isOneDigitIntBetween(modeIn, bottom, top))
-        {
-            printf("What a save!\n");
-        }
-    }
-
-    return strtol(modeIn.c_str(),NULL,10);
-}
-
-
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
