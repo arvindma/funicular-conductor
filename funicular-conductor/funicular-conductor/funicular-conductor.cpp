@@ -31,17 +31,18 @@ int main() {
 
         if (controller1.controllerCheck()) {
             while (controller1.controllerCheck()) {
-                printf("LEFT\n");
+                
                 velocity tS = velocity::joystickToVelocity(controller1.joystickMagnitude('L'), controller1.joystickAngle('L'));
                 float rS = controller1.joystickMagnitude('R');/*Add radians per sec*/
                 polarCoordinates cR(0, 0);
+                printf("ROTATION SPEED: %f\n", rS);
                 
                 velocity module1v = velocity::botToWheelVelocity(module1p, cR, rS, tS);
                 velocity module2v = velocity::botToWheelVelocity(module2p, cR, rS, tS);
                 velocity module3v = velocity::botToWheelVelocity(module3p, cR, rS, tS);
-                printf("Module 1 Angle and Speed: %f, %f\n", module1v.speed, module1v.angle/(2*M_PI)*360);
-                printf("Module 2 Angle and Speed: %f, %f\n", module2v.speed, module2v.angle / (2 * M_PI) * 360);
-                printf("Module 3 Angle and Speed: %f, %f\n", module3v.speed, module3v.angle / (2 * M_PI) * 360);
+                printf("Module 1 Angle and Speed: %f, %f\n", module1v.speed, (polarCoordinates::angleRangeLimit(module1v.angle)) / (2 * M_PI) * 360);
+                printf("Module 2 Angle and Speed: %f, %f\n", module2v.speed, (polarCoordinates::angleRangeLimit(module2v.angle)) / (2 * M_PI) * 360);
+                printf("Module 3 Angle and Speed: %f, %f\n", module3v.speed, (polarCoordinates::angleRangeLimit(module3v.angle)) / (2 * M_PI) * 360);
                 Sleep(500);
             }
         }
