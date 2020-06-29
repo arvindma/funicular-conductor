@@ -59,24 +59,29 @@ class velocity {
 			velocityOutput.angle = v1.angle + atan2f(v2.speed * sin(v2.angle - v1.angle), v1.speed + v2.speed * cos(v2.angle - v1.angle));
 			return velocityOutput;
 		}
+
 		else if (v1.speed == 0 && v2.speed == 0) return velocity(0, 0);
+
 		else if (v2.speed == 0) return v1;
+
 		else return v2;
 	}
 public:
 	static velocity botToWheelVelocity(polarCoordinates mp, polarCoordinates cR, float rS, velocity tS) {
-		polarCoordinates deltacmp(0.0, 0.0); //Difference between center of rotation and module position
+		polarCoordinates deltacmp(0.0, 0.0); //Difference between center of rotation and module position (which is nothing when cR is (0,0))
 		deltacmp.radius = deltacmp.distanceBetween(mp.radius, mp.angle, cR.radius, cR.angle);
 		deltacmp.angle = deltacmp.angleBetween(mp.radius, mp.angle, cR.radius, cR.angle);
-		printf("deltacmp radius: %f\n", deltacmp.radius);
-		velocity rotationVector(0.0, 0.0);
+
 		float maxTSpeed = 1;
-		float maxRSpeed = deltacmp.radius*1;
+		float maxRSpeed = deltacmp.radius * 1;
+
+		velocity rotationVector(0.0, 0.0);
+
 		rotationVector.speed = deltacmp.radius * rS;
 		rotationVector.angle = deltacmp.angle + (M_PI / 2 * rS / abs(rS));
-		cout << "Rotation speed" << rotationVector.speed << endl;
+
 		velocity prenormalizedOutput = velocity::velocityAddition(rotationVector, tS);
-		cout << "Prenormalized speed" << prenormalizedOutput.speed << endl;
+
 		velocity velocityOutput(0, 0);
 		velocityOutput.speed = abs(prenormalizedOutput.speed / (maxRSpeed + maxTSpeed));
 		velocityOutput.angle = prenormalizedOutput.angle;

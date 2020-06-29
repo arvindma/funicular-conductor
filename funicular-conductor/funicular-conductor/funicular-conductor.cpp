@@ -33,9 +33,8 @@ int main() {
             while (controller1.controllerCheck()) {
                 
                 velocity tS = velocity::joystickToVelocity(controller1.joystickMagnitude('L'), controller1.joystickAngle('L'));
-                float rS = controller1.joystickMagnitude('R');/*Add radians per sec*/
-                polarCoordinates cR(0, 0);
-                printf("ROTATION SPEED: %f\n", rS);
+                float rS = controller1.joystickMagnitude('R');//Add radians per sec conversion
+                polarCoordinates cR(0, 0); //Center of rotation
                 
                 velocity module1v = velocity::botToWheelVelocity(module1p, cR, rS, tS);
                 velocity module2v = velocity::botToWheelVelocity(module2p, cR, rS, tS);
