@@ -9,7 +9,8 @@
 #define INPUT_DEADZONE 4000
 
 class controllerInfo {
-    public: bool controllerCheck() {
+public:
+    bool controllerCheck() {
         XINPUT_STATE state;
         DWORD controllerConnected = XInputGetState(0, &state);
 
@@ -27,7 +28,8 @@ class controllerInfo {
         }
         return true;
     }
-    public: float joystickMagnitude(char LorR) {
+
+    float joystickMagnitude(char LorR) {
         XINPUT_STATE state;
         DWORD controllerConnected = XInputGetState(0, &state);
         float X = 0;
@@ -59,7 +61,8 @@ class controllerInfo {
         }
         return normalizedMagnitude;
     }
-    public: float joystickAngle(char LorR) {
+   
+    float joystickAngle(char LorR) {
         XINPUT_STATE state;
         DWORD controllerConnected = XInputGetState(0, &state);
         float X = 0;
@@ -96,13 +99,13 @@ class controllerInfo {
         return angle + M_PI/2;
         
     }
-public: float triggersMagnitude() {
-    XINPUT_STATE state;
-    DWORD controllerConnected = XInputGetState(0, &state);
-    float lT = -state.Gamepad.bLeftTrigger/255.0;
-    float rT = state.Gamepad.bRightTrigger/255.0;
-    float triggers = lT + rT;
-    return triggers;
-}
-   
+
+    float triggersMagnitude() {
+        XINPUT_STATE state;
+        DWORD controllerConnected = XInputGetState(0, &state);
+        float lT = -state.Gamepad.bLeftTrigger/255.0;
+        float rT = state.Gamepad.bRightTrigger/255.0;
+        float triggers = lT + rT;
+        return triggers;
+    }
 };

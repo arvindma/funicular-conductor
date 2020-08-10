@@ -3,7 +3,7 @@
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
@@ -15,21 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="funicular-conductor.cpp">
+    <ClCompile Include="src\botToModuleMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\funicular-conductor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="controller.h">
+    <ClInclude Include="include\botConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="modeSelector.h">
+    <ClInclude Include="include\botToModuleMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="botToModuleMath.h">
+    <ClInclude Include="include\controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="botConstants.h">
+    <ClInclude Include="include\modeSelector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
