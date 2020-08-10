@@ -1,13 +1,11 @@
 ﻿  funicular-conductor.cpp
-C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\botToModuleMath.h(31,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\botToModuleMath.h(34,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\botToModuleMath.h(76,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\funicular-conductor.cpp(28,66): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\funicular-conductor.cpp(29,81): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\funicular-conductor.cpp(30,81): warning C4305: 'argument': truncation from 'double' to 'float'
-  Generating code
-  2 of 156 functions ( 1.3%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
-  Finished generating code
-  funicular-conductor.vcxproj -> C:\Users\PC\Documents\funicular-conductor\funicular-conductor\Release\funicular-conductor.exe
+C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\controller.h(88,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\controller.h(93,30): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\controller.h(96,22): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\controller.h(102,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\controller.h(103,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\botToModuleMath.h(32,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\botToModuleMath.h(35,17): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\botToModuleMath.h(79,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\botToModuleMath.h(119,46): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\PC\Documents\funicular-conductor\funicular-conductor\funicular-conductor\funicular-conductor.cpp(9,1): fatal error C1189: #error:
