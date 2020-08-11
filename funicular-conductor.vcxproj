@@ -147,8 +147,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="controller.cpp" />
     <ClCompile Include="src\botToModuleMath.cpp" />
+    <ClCompile Include="src\controller.cpp" />
     <ClCompile Include="src\funicular-conductor.cpp" />
   </ItemGroup>
   <ItemGroup>
