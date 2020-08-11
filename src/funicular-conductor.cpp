@@ -22,60 +22,59 @@ int main() {
     if (mode == 1) {//Controller Mode 
         printf("YAY! CONTROLLERS\n");
 
-        controllerInfo controller1;
-        polarCoordinates module1p(MODULEP_RADIUS, MODULEP1_ANGLE);
-        polarCoordinates module2p(MODULEP_RADIUS, MODULEP2_ANGLE);
-        polarCoordinates module3p(MODULEP_RADIUS, MODULEP3_ANGLE);
+        PolarCoordinates module1p(MODULEP_MAGNITUDE, MODULEP1_ANGLE);
+        PolarCoordinates module2p(MODULEP_MAGNITUDE, MODULEP2_ANGLE);
+        PolarCoordinates module3p(MODULEP_MAGNITUDE, MODULEP3_ANGLE);
 
         float preSpeed[] = { 0.0,0.0,0.0 };
         float preAngle[] = { 0.0,0.0,0.0 };
 
-        if (controller1.controllerCheck()) {
-            while (controller1.controllerCheck()) {
+        if (Controller::controllerCheck()) {
+            while (Controller::controllerCheck()) {
                 
-                velocity translationSpeed = joystickToVelocity(controller1.joystickMagnitude('L'), controller1.joystickAngle('L'));
-                float rotationSpeed = controller1.triggersMagnitude();
-                polarCoordinates cR(MODULEP_RADIUS * controller1.joystickMagnitude('R'), controller1.joystickAngle('R')); //Center of rotation
+                Velocity translationSpeed = joystickToVelocity(Controller::joystickMagnitude(LorR::L), Controller::joystickAngle(LorR::L));
+                float rotationSpeed = Controller::triggersMagnitude();
+                PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
 
                 float addNormalizer1 = 1.0;
                 float addNormalizer2 = 1.0;
                 float addNormalizer3 = 1.0;
 
-                velocity module1v = botToWheelVelocity(module1p, cR, rotationSpeed, translationSpeed, &addNormalizer1);
-                velocity module2v = botToWheelVelocity(module2p, cR, rotationSpeed, translationSpeed, &addNormalizer2);
-                velocity module3v = botToWheelVelocity(module3p, cR, rotationSpeed, translationSpeed, &addNormalizer3);
+                Velocity module1v = botToWheelVelocity(module1p, rotationCenter, rotationSpeed, translationSpeed, &addNormalizer1);
+                Velocity module2v = botToWheelVelocity(module2p, rotationCenter, rotationSpeed, translationSpeed, &addNormalizer2);
+                Velocity module3v = botToWheelVelocity(module3p, rotationCenter, rotationSpeed, translationSpeed, &addNormalizer3);
 
                 float tempSpeeds[3];
-                normalizingSpeeds(module1v.speed, module2v.speed, module3v.speed, addNormalizer1, addNormalizer2, addNormalizer3, &tempSpeeds[0]);
-               
-                module1v.angle = (angleRangeLimit(module1v.angle));
-                module2v.angle = (angleRangeLimit(module2v.angle));
-                module3v.angle = (angleRangeLimit(module3v.angle));
+                normalizingSpeeds(module1v.magnitude, module2v.magnitude, module3v.magnitude, addNormalizer1, addNormalizer2, addNormalizer3, &tempSpeeds[0]);
 
-                int optimizationModule1 = speedDirectionOptimization(preAngle[0], module1v.angle);
-                int optimizationModule2 = speedDirectionOptimization(preAngle[1], module2v.angle);
-                int optimizationModule3 = speedDirectionOptimization(preAngle[2], module3v.angle);
+                int optimizationModule1 = speedDirectionOptimization(preAngle[0], module1v.getAngle());
+                int optimizationModule2 = speedDirectionOptimization(preAngle[1], module2v.getAngle());
+                int optimizationModule3 = speedDirectionOptimization(preAngle[2], module3v.getAngle());
 
-                module1v.speed = -tempSpeeds[0] * optimizationModule1;
-                module2v.speed = -tempSpeeds[1] * optimizationModule2;
-                module3v.speed = -tempSpeeds[2] * optimizationModule3;
-                module1v.angle = angleDirectionOptimization(module1v.angle, optimizationModule1);
-                module2v.angle = angleDirectionOptimization(module2v.angle, optimizationModule2);
-                module3v.angle = angleDirectionOptimization(module3v.angle, optimizationModule3);
+                module1v.magnitude = -tempSpeeds[0] * optimizationModule1;
+                module2v.magnitude = -tempSpeeds[1] * optimizationModule2;
+                module3v.magnitude = -tempSpeeds[2] * optimizationModule3;
+                module1v.setAngle(angleDirectionOptimization(module1v.getAngle(), optimizationModule1));
+                module2v.setAngle(angleDirectionOptimization(module2v.getAngle(), optimizationModule2));
+                module3v.setAngle(angleDirectionOptimization(module3v.getAngle(), optimizationModule3));
 
-                if (abs(module1v.speed) < 0.001) module1v.angle = preAngle[0];
-                if (abs(module2v.speed) < 0.001) module2v.angle = preAngle[1];
-                if (abs(module3v.speed) < 0.001) module3v.angle = preAngle[2];
-                preSpeed[0] = module1v.speed;
-                preSpeed[1] = module2v.speed;
-                preSpeed[2] = module3v.speed;
-                preAngle[0] = module1v.angle;
-                preAngle[1] = module2v.angle;
-                preAngle[2] = module3v.angle;
+                if (abs(module1v.magnitude) < 0.001)
+                    module1v.setAngle(preAngle[0]);
+                if (abs(module2v.magnitude) < 0.001)
+                    module2v.setAngle(preAngle[1]);
+                if (abs(module3v.magnitude) < 0.001)
+                    module3v.setAngle(preAngle[2]);
 
-                printf("Module 1 Angle and Speed: %f, %fπ\n", module1v.speed, module1v.angle / (M_PI));
-                printf("Module 2 Angle and Speed: %f, %fπ\n", module2v.speed, module2v.angle / (M_PI));
-                printf("Module 3 Angle and Speed: %f, %fπ\n", module3v.speed, module3v.angle / (M_PI));
+                preSpeed[0] = module1v.magnitude;
+                preSpeed[1] = module2v.magnitude;
+                preSpeed[2] = module3v.magnitude;
+                preAngle[0] = module1v.getAngle();
+                preAngle[1] = module2v.getAngle();
+                preAngle[2] = module3v.getAngle();
+
+                printf("Module 1 Angle and Speed: %f, %f\n", module1v.magnitude, 360 * module1v.getAngle() / (2 * F_PI));
+                printf("Module 2 Angle and Speed: %f, %f\n", module2v.magnitude, 360 * module2v.getAngle() / (2 * F_PI));
+                printf("Module 3 Angle and Speed: %f, %f\n", module3v.magnitude, 360 * module3v.getAngle() / (2 * F_PI));
                 Sleep(1000/20);
             }
         }

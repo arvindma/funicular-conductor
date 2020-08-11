@@ -1,7 +1,4 @@
 #pragma once
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
 
 
 #include <iostream>
@@ -9,33 +6,48 @@
 #include "botConstants.h"
 
 
-class polarCoordinates {
+class PolarCoordinates {
 public:
-    float radius;
-    float angle;
+    float getAngle() {
+        if (angle < 0) {
+            angle = fmod(angle, 2 * F_PI);
+            angle += 2 * F_PI;
+        }
+        if (angle > 2 * F_PI) {
+            angle = fmod(angle, 2 * F_PI);
+        }
+        return angle;
+    }
+    void setAngle(float angle_) {
+        angle = angle_;
+    }
 
-    polarCoordinates(float radius_, float angle_): radius(radius_), angle(angle_) {}
+    PolarCoordinates(): magnitude(0), angle(0) {}
+    PolarCoordinates(float magnitude_, float angle_): magnitude(magnitude_), angle(angle_) {}
+
+public:
+    float magnitude;
+
+private:
+    float angle;
+};
+
+
+class Velocity : public PolarCoordinates {
+public:
+    Velocity() : PolarCoordinates() {}
+    Velocity(float magnitude_, float angle_) : PolarCoordinates(magnitude_, angle_) {}
 };
 
 float distanceBetween(float, float, float, float);
 
 float angleBetween(float, float, float, float);
 
-float angleRangeLimit(float);
+Velocity joystickToVelocity(float, float);
 
-class velocity {
-public:
-    float speed;
-    float angle;
+Velocity velocityAddition(Velocity *, Velocity*);
 
-    velocity(float speed_, float angle_): speed(speed_), angle(angle_) {}
-};
-
-velocity joystickToVelocity(float, float);
-
-velocity velocityAddition(velocity, velocity);
-
-velocity botToWheelVelocity(polarCoordinates, polarCoordinates, float, velocity, float *);
+Velocity botToWheelVelocity(PolarCoordinates, PolarCoordinates, float, Velocity, float *);
 
 void normalizingSpeeds(float, float, float, float, float, float, float *);
 
