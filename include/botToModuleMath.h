@@ -9,13 +9,17 @@
 class PolarCoordinates {
 public:
     float getAngle() {
-        if (angle < 0) {
-            angle = fmod(angle, 2 * F_PI);
-            angle += 2 * F_PI;
+        float tempAngle = angle;
+        if (tempAngle < 0) {
+            tempAngle = fmod(tempAngle, 2 * F_PI);
+            tempAngle += 2 * F_PI;
         }
-        if (angle > 2 * F_PI) {
-            angle = fmod(angle, 2 * F_PI);
+        if (tempAngle > 2 * F_PI) {
+            tempAngle = fmod(tempAngle, 2 * F_PI);
         }
+        return tempAngle;
+    }
+    float getAngleUnconstrained() {
         return angle;
     }
     void setAngle(float angle_) {
