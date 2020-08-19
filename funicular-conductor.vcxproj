@@ -120,7 +120,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;./lib</AdditionalIncludeDirectories>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -136,7 +137,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;./lib</AdditionalIncludeDirectories>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,15 +149,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="lib\FastCRC\FastCRCsw.cpp" />
+    <ClCompile Include="lib\SerialPort\SerialPort.cpp" />
     <ClCompile Include="src\botToModuleMath.cpp" />
+    <ClCompile Include="src\comms.cpp" />
     <ClCompile Include="src\controller.cpp" />
     <ClCompile Include="src\funicular-conductor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\botConstants.h" />
     <ClInclude Include="include\botToModuleMath.h" />
+    <ClInclude Include="include\comms.h" />
     <ClInclude Include="include\controller.h" />
     <ClInclude Include="include\modeSelector.h" />
+    <ClInclude Include="lib\FastCRC\FastCRC.h" />
+    <ClInclude Include="lib\FastCRC\FastCRC_cpu.h" />
+    <ClInclude Include="lib\FastCRC\FastCRC_tables.h" />
+    <ClInclude Include="lib\PacketSerial\Encoding\COBS.h" />
+    <ClInclude Include="lib\PacketSerial\PacketSerial.h" />
+    <ClInclude Include="lib\SerialPort\SerialPort.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

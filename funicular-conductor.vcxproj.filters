@@ -9,20 +9,37 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Libraries">
+      <UniqueIdentifier>{bc8cbee4-005c-4ee9-b1ce-611dd6ffaee3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\PacketSerial">
+      <UniqueIdentifier>{2d5a3cc9-1793-435c-b2b6-311ee6324446}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\SerialPort">
+      <UniqueIdentifier>{7dd5987b-45bc-4cec-98a3-ef576a5125a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\FastCRC">
+      <UniqueIdentifier>{63d5e32f-916e-462c-a512-0a62cc6cf4de}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\botToModuleMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\funicular-conductor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\controller.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\botToModuleMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\comms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\SerialPort\SerialPort.cpp">
+      <Filter>Libraries\SerialPort</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\FastCRC\FastCRCsw.cpp">
+      <Filter>Libraries\FastCRC</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +54,27 @@
     </ClInclude>
     <ClInclude Include="include\modeSelector.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\comms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\SerialPort\SerialPort.hpp">
+      <Filter>Libraries\SerialPort</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\PacketSerial\PacketSerial.h">
+      <Filter>Libraries\PacketSerial</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\PacketSerial\Encoding\COBS.h">
+      <Filter>Libraries\PacketSerial</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\FastCRC\FastCRC.h">
+      <Filter>Libraries\FastCRC</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\FastCRC\FastCRC_cpu.h">
+      <Filter>Libraries\FastCRC</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\FastCRC\FastCRC_tables.h">
+      <Filter>Libraries\FastCRC</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
