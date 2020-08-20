@@ -15,6 +15,9 @@ void writeFloat(float, uint8_t*, size_t);
 float readFloat(const uint8_t*, const size_t);
 void packetHandler(const void*, const uint8_t*, unsigned long);
 
+boolean newDataAvailable = false;
+ResponsePacket rxPacket;
+
 
 //converts big-endian to little-endian
 
@@ -26,16 +29,17 @@ FastCRC8 crc8;
 
 void Radio::initialize()
 {
-    cout << "Enter number of the desired COM port. ";
+    cout << "Enter number of the desired COM port, or ";
 
     while (1) {
-        cout << "Available ports :" << endl;
+        cout << "q to quit. Available ports :" << endl;
         listComPorts();
         string portInput;
         getline(cin, portInput);
-        portInput = "\\\\.\\COM" + portInput;
+        if (portInput == "q" || portInput == "Q")
+            exit(0);
 
-        cout << portInput;
+        portInput = "\\\\.\\COM" + portInput;
 
         const size_t nameSize = portInput.size() + 1;
         char* portName = new char[nameSize];
@@ -101,11 +105,27 @@ void listComPorts()
     }
 }
 
-
-
 void packetHandler(const void* sender, const uint8_t* data, unsigned long size)
 {
+    if (size != RESPONSE_PACKET_SIZE) return;
+    uint8_t crc = crc8.smbus(data, RESPONSE_PACKET_SIZE - 1);
+    if (crc != data[RESPONSE_PACKET_CRC_OFFSET]) return;
+    ResponsePacket temp;
+    temp.flags = (data[RESPONSE_PACKET_FLAGS_OFFSET] << 8) + data[RESPONSE_PACKET_FLAGS_OFFSET + 1];
+    temp.crc = crc;
+    rxPacket = temp;
+    newDataAvailable = true;
+}
 
+boolean Radio::packetAvailable()
+{
+    return newDataAvailable;
+}
+
+Radio::ResponsePacket Radio::getLastPacket()
+{
+    newDataAvailable = false;
+    return rxPacket;
 }
 
 #if __FLOAT_WORD_ORDER__ != __ORDER_LITTLE_ENDIAN__

@@ -51,4 +51,6 @@ namespace Radio
     void initialize();
     void sendControlPacket(Packet);
     void update();
+    boolean packetAvailable();
+    ResponsePacket getLastPacket();
 } // namespace RADIO
