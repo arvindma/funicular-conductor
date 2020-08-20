@@ -302,7 +302,7 @@ private:
 
     bool _recieveBufferOverflow = false;
 
-    uint8_t _receiveBuffer[ReceiveBufferSize];
+    uint8_t _receiveBuffer[ReceiveBufferSize] = { 0 };
     unsigned long _receiveBufferIndex = 0;
 
     SerialPort* _stream = nullptr;

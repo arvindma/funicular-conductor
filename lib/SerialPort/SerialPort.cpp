@@ -102,7 +102,7 @@ int SerialPort::read(const uint8_t *buffer, DWORD buf_size)
     if (!connected)
         return -1;
     DWORD bytesRead{};
-    size_t toRead = 0;
+    DWORD toRead = 0;
 
     ClearCommError(handler, &errors, &status);
 
