@@ -36,6 +36,8 @@ void Radio::initialize()
         listComPorts();
         string portInput;
         getline(cin, portInput);
+        if (portInput.size() > 4)
+            portInput = portInput.substr(0, 4);
         if (portInput == "q" || portInput == "Q")
             exit(0);
 
@@ -62,6 +64,24 @@ void Radio::initialize()
     packetInterface.setPacketHandler(&packetHandler);
 }
 
+void listComPorts()
+{
+    char lpTargetPath[5000]; // buffer to store the path
+
+    for (int i = 0; i < 255; i++) // checking ports from COM0 to COM255
+    {
+        std::string str = "COM" + std::to_string(i); // converting to COM0, COM1, COM2
+        DWORD retVal = QueryDosDeviceA(str.c_str(), lpTargetPath, 5000);
+
+        if (retVal) //QueryDosDevice returns zero if it didn't find an object
+        {
+            std::cout << str << ": " << lpTargetPath << std::endl;
+        }
+
+        //if (GetLastError() == ERROR_INSUFFICIENT_BUFFER);
+    }
+}
+
 void Radio::sendControlPacket(Packet packet)
 {
     uint8_t buffer[PACKET_SIZE];
@@ -85,24 +105,6 @@ void Radio::sendControlPacket(Packet packet)
 void Radio::update()
 {
     packetInterface.update();
-}
-
-void listComPorts()
-{
-    char lpTargetPath[5000]; // buffer to store the path
-
-    for (int i = 0; i < 255; i++) // checking ports from COM0 to COM255
-    {
-        std::string str = "COM" + std::to_string(i); // converting to COM0, COM1, COM2
-        DWORD retVal = QueryDosDeviceA(str.c_str(), lpTargetPath, 5000);
-
-        if (retVal) //QueryDosDevice returns zero if it didn't find an object
-        {
-            std::cout << str << ": " << lpTargetPath << std::endl;
-        }
-
-        //if (GetLastError() == ERROR_INSUFFICIENT_BUFFER);
-    }
 }
 
 void packetHandler(const void* sender, const uint8_t* data, unsigned long size)
