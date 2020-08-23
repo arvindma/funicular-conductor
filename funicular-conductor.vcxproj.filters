@@ -29,9 +29,6 @@
     <ClCompile Include="src\controller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\botToModuleMath.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\comms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -41,12 +38,12 @@
     <ClCompile Include="lib\FastCRC\FastCRCsw.cpp">
       <Filter>Libraries\FastCRC</Filter>
     </ClCompile>
+    <ClCompile Include="src\moduleMath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\botConstants.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\botToModuleMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\controller.h">
@@ -75,6 +72,9 @@
     </ClInclude>
     <ClInclude Include="lib\FastCRC\FastCRC_tables.h">
       <Filter>Libraries\FastCRC</Filter>
+    </ClInclude>
+    <ClInclude Include="include\moduleMath.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

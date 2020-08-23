@@ -68,19 +68,9 @@ float Controller::joystickAngle(LorR dir) {
         return angle;
     }
 
-    angle = atan(Y / X);
+    angle = atan2(-X, Y);
 
-    if (X < 0) {
-
-        angle = angle + F_PI;
-
-    }
-    else if (X > 0 && Y < 0) {
-
-        angle = 2 * F_PI + angle;
-
-    }
-    return angle + F_PI / 2;
+    return angle > 0 ? angle : angle + (2 * F_PI);
 
 }
 
