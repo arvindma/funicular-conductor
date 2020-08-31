@@ -162,6 +162,7 @@
     <ClInclude Include="include\comms.h" />
     <ClInclude Include="include\controller.h" />
     <ClInclude Include="include\modeSelector.h" />
+    <ClInclude Include="include\radio_defs.h" />
     <ClInclude Include="lib\FastCRC\FastCRC.h" />
     <ClInclude Include="lib\FastCRC\FastCRC_cpu.h" />
     <ClInclude Include="lib\FastCRC\FastCRC_tables.h" />

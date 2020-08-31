@@ -1,7 +1,6 @@
 #include <iostream>
 #include <string>
 #include <windows.h>
-#include "botToModuleMath.h"
 #include "comms.h"
 #include "SerialPort/SerialPort.hpp"    //https://github.com/manashmandal/SerialPort
 #include "PacketSerial/PacketSerial.h"  //https://github.com/bakercp/PacketSerial
@@ -11,16 +10,12 @@ using namespace std;
 using namespace Radio;
 
 void listComPorts();
-void writeFloat(float, uint8_t*, size_t);
-float readFloat(const uint8_t*, const size_t);
 void packetHandler(const void*, const uint8_t*, unsigned long);
+void writeFloat(float, uint8_t*, size_t);
+float readFloat(const uint8_t*, size_t);
 
 boolean newDataAvailable = false;
 ResponsePacket rxPacket;
-
-
-//converts big-endian to little-endian
-
 
 unique_ptr<SerialPort> radioConnection;  //null by default
 PacketSerial packetInterface;
@@ -48,7 +43,7 @@ void Radio::initialize()
         portInput.copy(portName, nameSize);
         portName[nameSize - 1] = '\0';
 
-        radioConnection = make_unique<SerialPort>(portName, CBR_115200);
+        radioConnection = make_unique<SerialPort>(portName, CBR_38400);
         delete[] portName;
 
         if (radioConnection->isConnected()) {
@@ -82,7 +77,7 @@ void listComPorts()
     }
 }
 
-void Radio::sendControlPacket(Packet packet)
+void Radio::sendControlPacket(const Packet &packet)
 {
     uint8_t buffer[PACKET_SIZE];
 
@@ -124,6 +119,11 @@ boolean Radio::packetAvailable()
     return newDataAvailable;
 }
 
+boolean Radio::ready()
+{
+    return radioConnection->isConnected();
+}
+
 Radio::ResponsePacket Radio::getLastPacket()
 {
     newDataAvailable = false;
@@ -135,9 +135,9 @@ Radio::ResponsePacket Radio::getLastPacket()
 #endif
 
 //converts little-endian to big-endian
-void writeFloat(float value, uint8_t* data, size_t index)
+static void writeFloat(float value, uint8_t* data, size_t index)
 {
-    RadioFloatUnion input;
+    FloatUnion input;
     input.fp = value;
 
     data[index + 0] = input.bytes[3];
@@ -147,9 +147,9 @@ void writeFloat(float value, uint8_t* data, size_t index)
 }
 
 //converts big-endian to little-endian
-float readFloat(const uint8_t* data, const size_t index)
+static float readFloat(const uint8_t* data, size_t index)
 {
-    RadioFloatUnion output;
+    FloatUnion output;
 
     output.bytes[0] = data[index + 3];
     output.bytes[1] = data[index + 2];

@@ -1,6 +1,6 @@
 ﻿#pragma once
+#include <iostream>
 #include <string>
-#include <sstream>
 #include "controller.h"
 #include "modeSelector.h"
 #include "moduleMath.h"
@@ -8,12 +8,34 @@
 
 using namespace std;
 
-//Declarations
+//int main() {
+//    Radio::initialize();
+//    int sent = 0;
+//    int received = 0;
+//
+//    while (1)
+//    {
+//        Radio::Packet packet;
+//        SETFLAG(packet.flags, Radio::FLAG_ACK);
+//        Radio::sendControlPacket(packet);
+//        sent++;
+//        Sleep(1000 / 20);
+//        Radio::update();
+//        if (Radio::packetAvailable())
+//        {
+//            Radio::ResponsePacket rxPacket = Radio::getLastPacket();
+//            received++;
+//        }
+//        cout << "sent: " << sent << " received: " << received << endl;
+//    }
+//}
 
 
 int main() {
     string controlOptions = "1.Controller Mode\n2.Position Mode\n";
     int mode = askForMode(controlOptions,1,2);
+
+    //Radio::initialize();
     
     if (mode == 1) {//Controller Mode 
         printf("YAY! CONTROLLERS\n");
@@ -28,6 +50,7 @@ int main() {
                 Velocity translationSpeed = joystickToVelocity(Controller::joystickMagnitude(LorR::L), Controller::joystickAngle(LorR::L));
                 float rotationSpeed = Controller::triggersMagnitude();
                 PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
+                unsigned int maxSpeed = 100;
                 
                 module1.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
                 module2.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
@@ -46,7 +69,25 @@ int main() {
                 printf("Module 1 Angle and Speed: %f, %.0f\n", module1.velocity.magnitude, module1.velocity.angle * RAD_TO_DEG);
                 printf("Module 2 Angle and Speed: %f, %.0f\n", module2.velocity.magnitude, module2.velocity.angle * RAD_TO_DEG);
                 printf("Module 3 Angle and Speed: %f, %.0f\n", module3.velocity.magnitude, module3.velocity.angle * RAD_TO_DEG);
-                Sleep(1000/2);
+
+                Radio::Packet packet;
+                packet.a1 = module1.velocity.angle;
+                packet.a2 = module2.velocity.angle;
+                packet.a3 = module3.velocity.angle;
+                packet.s1 = maxSpeed * module1.velocity.magnitude;
+                packet.s2 = maxSpeed * module2.velocity.magnitude;
+                packet.s3 = maxSpeed * module3.velocity.magnitude;
+
+                if(Radio::ready())
+                    Radio::sendControlPacket(packet);
+
+                Sleep(1000/20);
+
+                Radio::update();
+                if (Radio::packetAvailable())
+                {
+                    Radio::ResponsePacket rxPacket = Radio::getLastPacket();
+                }
             }
         }
     }
