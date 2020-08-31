@@ -43,7 +43,7 @@ void Radio::initialize()
         portInput.copy(portName, nameSize);
         portName[nameSize - 1] = '\0';
 
-        radioConnection = make_unique<SerialPort>(portName, CBR_38400);
+        radioConnection = make_unique<SerialPort>(portName, CBR_115200);
         delete[] portName;
 
         if (radioConnection->isConnected()) {

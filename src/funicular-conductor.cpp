@@ -19,14 +19,14 @@ using namespace std;
 //        SETFLAG(packet.flags, Radio::FLAG_ACK);
 //        Radio::sendControlPacket(packet);
 //        sent++;
-//        Sleep(1000 / 20);
+//        Sleep(1000 / 65);
 //        Radio::update();
 //        if (Radio::packetAvailable())
 //        {
 //            Radio::ResponsePacket rxPacket = Radio::getLastPacket();
 //            received++;
 //        }
-//        cout << "sent: " << sent << " received: " << received << endl;
+//        cout << "sent: " << sent << " received: " << received << " lost: " << sent - received << endl;
 //    }
 //}
 
