@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include <sstream>
 
 using namespace std;
 
@@ -17,11 +16,11 @@ int askForMode(string modeOptions, int bottom, int top)
     cout << modeOptions;
 
     string modeIn;
-    cin >> modeIn;
+    getline(cin, modeIn);
 
     while (isOneDigitIntBetween(modeIn, bottom, top) == false) {
         printf("Whoops... Enter a number between %d and %d\n", bottom, top);
-        cin >> modeIn;
+        getline(cin, modeIn);
         if (isOneDigitIntBetween(modeIn, bottom, top)) {
             printf("What a save!\n");
         }
