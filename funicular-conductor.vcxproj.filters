@@ -49,9 +49,6 @@
     <ClInclude Include="include\controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\modeSelector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\comms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
