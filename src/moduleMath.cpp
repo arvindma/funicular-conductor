@@ -54,7 +54,7 @@ void Module::botToWheelVelocity(PolarCoordinates rotationCenter, float rotationS
     Velocity rotationVector(0.0, 0.0);
     rotationSpeed = rotationSpeed / MODULEP_MAGNITUDE;
     rotationVector.magnitude = deltacmp.magnitude * abs(rotationSpeed);
-    rotationVector.angle = (deltacmp.getConstrainedAngle() + (F_PI / 2 * rotationSpeed / abs(rotationSpeed)));
+    rotationVector.angle = (deltacmp.getConstrainedAngle() - (F_PI / 2 * rotationSpeed / abs(rotationSpeed)));
 
     Velocity prenormalizedOutput = velocityAddition(rotationVector, translationSpeed);
 
@@ -86,27 +86,29 @@ void normalizingSpeeds(Module &mod1, Module &mod2, Module &mod3)
     mod2.velocity.magnitude /= n;
     mod3.velocity.magnitude /= n;
 }
-
+void Module::totalAngle() {
+    
+}
 void Module::velocityOptimiztion()
 {
-    //speed optimization
-    /*int sign;
-    if (velocity.getConstrainedAngle() >= (previousVelocity.getConstrainedAngle() - (F_PI / 2))
-        && velocity.getConstrainedAngle() <= (previousVelocity.getConstrainedAngle() + (F_PI / 2)))
-        sign = -1;
-    else
-        sign = 1;
+    float angleTolerance = 0.05f;
+    if (abs(velocity.magnitude) > 0) {
+        if (velocity.getConstrainedAngle() < previousVelocity.getConstrainedAngle() - F_PI)
+            turns++;
+        if (velocity.getConstrainedAngle() > previousVelocity.getConstrainedAngle() + F_PI)
+            turns--;
+    }
 
-    velocity.magnitude *= sign;*/
-
-    ////angle optimization
-    //if (sign == 1)
-    //{
-    //        velocity.angle += F_PI;
-
+    //if (abs(velocity.angle - previousVelocity.angle) < F_PI - angleTolerance && abs(velocity.angle - previousVelocity.angle) > F_PI + angleTolerance) {
+    //   
+    //    if (abs(velocity.angle - previousVelocity.angle) > F_PI / 2) {
+    //        if (velocity.angle > previousVelocity.angle)
+    //            velocity.angle -= F_PI;
+    //        else velocity.angle += F_PI;
+    //        velocity.magnitude *= -1;
+    //    }
     //}
-
-    //don't move if speed is 0
+    velocity.angle += turns * 2 * F_PI;
     if (abs(velocity.magnitude) < 0.01)
     {
         velocity.angle = (previousVelocity.angle);

@@ -43,12 +43,14 @@ public:
     Velocity velocity = Velocity(0.0, 0.0);
     Velocity previousVelocity = Velocity(0.0, 0.0);
     float normalizingFactor = 1;
+    int turns = 0;
 
 
     Module(float, float);
 
     void cacheVelocity();
     void botToWheelVelocity(PolarCoordinates, float, Velocity);
+    void totalAngle();
     void velocityOptimiztion();
 
 private:
