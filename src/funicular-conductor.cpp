@@ -6,15 +6,15 @@
 #include "comms.h"
 
 using namespace std;
+void accurateDelay(unsigned long);
 
 //int main() {
 //    Radio::initialize();
 //    int sent = 0;
 //    int received = 0;
 //
-//    LARGE_INTEGER time, lastTime, lastTime2, oneSec;
+//    LARGE_INTEGER time, lastTime, oneSec;
 //    QueryPerformanceCounter(&lastTime);
-//    QueryPerformanceCounter(&lastTime2);
 //    QueryPerformanceFrequency(&oneSec);
 //
 //    while (1)
@@ -23,13 +23,7 @@ using namespace std;
 //        SETFLAG(packet.flags, Radio::FLAG_ACK);
 //        Radio::sendControlPacket(packet);
 //        sent++;
-//        while (1) {
-//            QueryPerformanceCounter(&time);
-//            if (time.QuadPart - lastTime2.QuadPart > oneSec.QuadPart / 50) {
-//                QueryPerformanceCounter(&lastTime2);
-//                break;
-//            }
-//        }
+//        accurateDelay(1000 / 50);
 //        Radio::update();
 //        if (Radio::packetAvailable())
 //        {
@@ -47,6 +41,22 @@ using namespace std;
 //        }
 //    }
 //}
+
+void accurateDelay(unsigned long ms)
+{
+    if (ms == 0)
+        return;
+    LARGE_INTEGER now, start, second;
+    QueryPerformanceFrequency(&second);
+    LONGLONG counts = (LONGLONG)(second.QuadPart * ((double)ms / 1000.0f));
+    QueryPerformanceCounter(&start);
+    while (1)
+    {
+        QueryPerformanceCounter(&now);
+        if (now.QuadPart - start.QuadPart > counts)
+            break;
+    }
+}
 
 
 int main() {
@@ -66,14 +76,14 @@ int main() {
         {
             cout << "Noooo!";
         }
-        if (mode > 0 && mode < 3) 
+        if (mode > 0 && mode < 3)
             break;
         cout << "Whoops..." << endl;
     }
 
 
     //Radio::initialize();
-    
+
     if (mode == 1) {//Controller Mode 
         printf("YAY! CONTROLLERS\n");
 
@@ -83,13 +93,13 @@ int main() {
 
         if (Controller::controllerCheck()) {
             while (true) {
-                
+
                 Velocity translationSpeed = joystickToVelocity(Controller::joystickMagnitude(LorR::L), Controller::joystickAngle(LorR::L));
                 float rotationSpeed = Controller::triggersMagnitude();
                 PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
-                
+
                 unsigned int maxSpeed = 100;
-                
+
                 module1.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
                 module2.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
                 module3.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
@@ -121,10 +131,10 @@ int main() {
                 packet.s2 = maxSpeed * module2.velocity.magnitude;
                 packet.s3 = maxSpeed * module3.velocity.magnitude;
 
-                if(Radio::ready())
+                if (Radio::ready())
                     Radio::sendControlPacket(packet);
 
-                Sleep(1000/20); //THIS DOESN'T WORK!!!!!!
+                Sleep(1000 / 20); //THIS DOESN'T WORK!!!!!!
 
                 Radio::update();
                 if (Radio::packetAvailable())
@@ -134,7 +144,7 @@ int main() {
             }
         }
     }
-    
+
     if (mode == 2) { //Position Mode
         printf("YAY! POSITION\n");
     }
