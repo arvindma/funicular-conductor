@@ -28,7 +28,7 @@ Velocity joystickToVelocity(float normalizedJoystick, float angle)
     return velocityOutput;
 }
 
-Velocity velocityAddition(const Velocity &v1, const Velocity &v2)
+Velocity velocityAddition(const Velocity& v1, const Velocity& v2)
 {
     if (v1.magnitude != 0 && v2.magnitude != 0) {
         Velocity velocityOutput(0.0, 0.0);
@@ -43,6 +43,22 @@ Velocity velocityAddition(const Velocity &v1, const Velocity &v2)
     else
         return v2;
 }
+
+float ConstrainedAngle(float angle)
+{
+    float tempAngle = angle;
+    if (tempAngle < 0)
+    {
+        tempAngle = fmod(tempAngle, 2 * F_PI);
+        tempAngle += 2 * F_PI;
+    }
+    if (tempAngle > 2 * F_PI)
+    {
+        tempAngle = fmod(tempAngle, 2 * F_PI);
+    }
+    return tempAngle;
+}
+
 
 void Module::botToWheelVelocity(PolarCoordinates rotationCenter, float rotationSpeed, Velocity translationSpeed)
 { // Velocities should be normalized from 0 to 1
@@ -73,7 +89,7 @@ void Module::botToWheelVelocity(PolarCoordinates rotationCenter, float rotationS
     velocity = velocityOutput;
 }
 
-void normalizingSpeeds(Module &mod1, Module &mod2, Module &mod3)
+void normalizingSpeeds(Module& mod1, Module& mod2, Module& mod3)
 {
     float n = mod1.normalizingFactor;
     if (n < mod2.normalizingFactor)
@@ -87,28 +103,44 @@ void normalizingSpeeds(Module &mod1, Module &mod2, Module &mod3)
     mod3.velocity.magnitude /= n;
 }
 void Module::totalAngle() {
-    
+    velocity.angle += (directionSwitchAngle) * F_PI;
+    if (abs(velocity.magnitude) > 0) 
+    {
+        if (ConstrainedAngle(velocity.angle + directionSwitchAngle % 2 * F_PI) < 
+            ConstrainedAngle(previousVelocity.angle + directionSwitchAngle % 2 * F_PI) - F_PI)
+            turns++;
+        if (ConstrainedAngle(velocity.angle + directionSwitchAngle % 2 * F_PI) > 
+            ConstrainedAngle(previousVelocity.angle + directionSwitchAngle % 2 * F_PI) + F_PI)
+            turns--;
+    }
+    velocity.angle += (turns * 2) * F_PI;
 }
 void Module::velocityOptimiztion()
 {
-    float angleTolerance = 0.05f;
-    if (abs(velocity.magnitude) > 0) {
-        if (velocity.getConstrainedAngle() < previousVelocity.getConstrainedAngle() - F_PI)
-            turns++;
-        if (velocity.getConstrainedAngle() > previousVelocity.getConstrainedAngle() + F_PI)
-            turns--;
+    
+    if (abs(velocity.magnitude) < 0.01)
+    {
+        velocity.angle = (previousVelocity.angle);
+        velocity.magnitude = 0;
     }
+    float angleDifference = abs(velocity.getConstrainedAngle() + directionSwitchAngle * F_PI - previousVelocity.getConstrainedAngle());
+    if (angleDifference > F_PI)
+        angleDifference = abs(2 * F_PI - angleDifference);
+    
 
-    //if (abs(velocity.angle - previousVelocity.angle) < F_PI - angleTolerance && abs(velocity.angle - previousVelocity.angle) > F_PI + angleTolerance) {
-    //   
-    //    if (abs(velocity.angle - previousVelocity.angle) > F_PI / 2) {
-    //        if (velocity.angle > previousVelocity.angle)
-    //            velocity.angle -= F_PI;
-    //        else velocity.angle += F_PI;
-    //        velocity.magnitude *= -1;
-    //    }
-    //}
-    velocity.angle += turns * 2 * F_PI;
+    std::cout << angleDifference << std::endl;
+    if (angleDifference > F_PI / 2) {
+        if (velocity.getConstrainedAngle() > previousVelocity.getConstrainedAngle()) {
+            directionSwitchAngle--;
+        }
+        else {
+            directionSwitchAngle++;
+        }
+            directionSwitch *= -1;
+    }
+    
+    velocity.magnitude *= directionSwitch;
+    totalAngle();
     if (abs(velocity.magnitude) < 0.01)
     {
         velocity.angle = (previousVelocity.angle);

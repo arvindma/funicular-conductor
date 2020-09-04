@@ -44,6 +44,8 @@ public:
     Velocity previousVelocity = Velocity(0.0, 0.0);
     float normalizingFactor = 1;
     int turns = 0;
+    int directionSwitchAngle = 0;
+    int directionSwitch = 1;
 
 
     Module(float, float);
@@ -67,4 +69,4 @@ Velocity velocityAddition(const Velocity &, const Velocity &);
 
 void normalizingSpeeds(Module &, Module &, Module &);
 
-
+float ConstrainedAngle(float);

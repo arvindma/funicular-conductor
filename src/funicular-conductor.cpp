@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <iostream>
 #include <string>
+#include <cmath>
 #include "controller.h"
 #include "moduleMath.h"
 #include "comms.h"
@@ -134,7 +135,7 @@ int main() {
                 if (Radio::ready())
                     Radio::sendControlPacket(packet);
 
-                Sleep(1000 / 20); //THIS DOESN'T WORK!!!!!!
+                Sleep(1000/2); //THIS DOESN'T WORK!!!!!!
 
                 Radio::update();
                 if (Radio::packetAvailable())
