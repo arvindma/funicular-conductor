@@ -4,12 +4,10 @@ bool Controller::controllerCheck() {
     XINPUT_STATE state;
     DWORD controllerConnected = XInputGetState(0, &state);
 
-    if (controllerConnected != ERROR_SUCCESS)
-    {
-        printf("No controller connected.\n");
+    if (controllerConnected == ERROR_SUCCESS)  
+        return true;
+    else
         return false;
-    }
-    return true;
 }
 
 float Controller::joystickMagnitude(LorR dir) {

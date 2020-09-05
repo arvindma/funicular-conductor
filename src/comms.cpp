@@ -47,7 +47,9 @@ void Radio::initialize()
         delete[] portName;
 
         if (radioConnection->isConnected()) {
-            cout << endl << "Connection established at port " << portInput << endl << endl;
+            system("CLS");
+            cout << "Connection established at port " << portInput << endl << endl;
+            Sleep(1000);
             break;
         }
         else {

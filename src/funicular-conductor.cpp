@@ -82,25 +82,23 @@ int main() {
         cout << "Whoops..." << endl;
     }
 
-
     //Radio::initialize();
 
     if (mode == 1) {//Controller Mode 
-        printf("YAY! CONTROLLERS\n");
+        printf("Controller Mode\n");
 
         Module module1(MODULEP_MAGNITUDE, MODULEP1_ANGLE),
             module2(MODULEP_MAGNITUDE, MODULEP2_ANGLE),
             module3(MODULEP_MAGNITUDE, MODULEP3_ANGLE);
 
-        while (1)
-        {
-            if (Controller::controllerCheck())
-                break;
-            else
-                Sleep(1000);
-        }
-
         while (true) {
+            if (!Controller::controllerCheck())
+            {
+                system("CLS");  //clear the console
+                printf("No controller connected.\n");
+                Sleep(1000);
+                continue;
+            }
 
             Velocity translationSpeed = joystickToVelocity(Controller::joystickMagnitude(LorR::L), Controller::joystickAngle(LorR::L));
             float rotationSpeed = Controller::triggersMagnitude();
@@ -122,6 +120,7 @@ int main() {
             module2.cacheVelocity();
             module3.cacheVelocity();
 
+            system("CLS"); //clear the consolea
             printf("Module 1 Angle and Speed and turns: %f, %.0f\n", module1.velocity.magnitude, module1.velocity.angle * RAD_TO_DEG);
             printf("Module 2 Angle and Speed and turns: %f, %.0f\n", module2.velocity.magnitude, module2.velocity.angle * RAD_TO_DEG);
             printf("Module 3 Angle and Speed and turns: %f, %.0f\n", module3.velocity.magnitude, module3.velocity.angle * RAD_TO_DEG);
