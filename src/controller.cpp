@@ -6,15 +6,8 @@ bool Controller::controllerCheck() {
 
     if (controllerConnected != ERROR_SUCCESS)
     {
-        printf("pLuG iN tHE cOntrOlLeR\n Press f if you don't have one\n");
-        std::string f = "no";
-        std::cin >> f;
-        if (f == "f") return false;
-        else
-        {
-            DWORD controllerConnected = XInputGetState(0, &state);
-            if (controllerConnected == ERROR_SUCCESS) return true;
-        }
+        printf("No controller connected.\n");
+        return false;
     }
     return true;
 }

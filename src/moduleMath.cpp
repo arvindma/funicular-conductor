@@ -127,8 +127,6 @@ void Module::velocityOptimiztion()
     if (angleDifference > F_PI)
         angleDifference = abs(2 * F_PI - angleDifference);
     
-
-    std::cout << angleDifference << std::endl;
     if (angleDifference > F_PI / 2) {
         if (velocity.getConstrainedAngle() > previousVelocity.getConstrainedAngle()) {
             directionSwitchAngle--;
