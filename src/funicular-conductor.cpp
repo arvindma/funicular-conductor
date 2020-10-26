@@ -82,7 +82,7 @@ int main() {
     }
 
 
-    //Radio::initialize();
+    Radio::initialize();
 
     if (mode == 1) {//Controller Mode 
         printf("YAY! CONTROLLERS\n");
@@ -98,7 +98,7 @@ int main() {
                 float rotationSpeed = Controller::triggersMagnitude();
                 PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
 
-                unsigned int maxSpeed = 100;
+                unsigned int maxSpeed = 120;
 
                 module1.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
                 module2.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
@@ -121,25 +121,35 @@ int main() {
                 Radio::Packet packet;
                 SETFLAG(packet.flags, Radio::FLAG_ACK);
                 SETFLAG(packet.flags, Radio::FLAG_ENABLE);
-                packet.a1 = 0;
-                packet.a2 = 0;
-                packet.a3 = 0;
-                //packet.a1 = module1.velocity.angle;
-                //packet.a2 = module2.velocity.angle;
-                //packet.a3 = module3.velocity.angle;
+                packet.a1 = module1.velocity.angle;
+                packet.a2 = module2.velocity.angle;
+                packet.a3 = module3.velocity.angle;
                 packet.s1 = maxSpeed * module1.velocity.magnitude;
                 packet.s2 = maxSpeed * module2.velocity.magnitude;
                 packet.s3 = maxSpeed * module3.velocity.magnitude;
 
+                if (Controller::isBPressed())
+                {
+                    packet.s1 = 0;
+                    packet.s2 = 0;
+                    packet.s3 = 0;
+                }
+
                 if (Radio::ready())
                     Radio::sendControlPacket(packet);
 
-                Sleep(1000 / 20); //THIS DOESN'T WORK!!!!!!
+                accurateDelay(1000 / 20);
 
                 Radio::update();
                 if (Radio::packetAvailable())
                 {
                     Radio::ResponsePacket rxPacket = Radio::getLastPacket();
+                }
+
+                if (Controller::isBPressed())
+                {
+                    accurateDelay(1000 / 20);
+                    exit(1);
                 }
             }
         }

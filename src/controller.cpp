@@ -82,3 +82,12 @@ float Controller::triggersMagnitude() {
     float triggers = lT + rT;
     return triggers;
 }
+
+boolean Controller::isBPressed() {
+    XINPUT_STATE state;
+    DWORD controllerConnected = XInputGetState(0, &state);
+    if ((state.Gamepad.wButtons & 0x2000) != 0)
+        return true;
+    else
+        return false;
+}
