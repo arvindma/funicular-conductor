@@ -48,6 +48,7 @@ void Radio::initialize()
 
         if (radioConnection->isConnected()) {
             cout << endl << "Connection established at port " << portInput << endl << endl;
+            Sleep(1000);
             break;
         }
         else {

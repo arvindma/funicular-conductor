@@ -4,19 +4,10 @@ bool Controller::controllerCheck() {
     XINPUT_STATE state;
     DWORD controllerConnected = XInputGetState(0, &state);
 
-    if (controllerConnected != ERROR_SUCCESS)
-    {
-        printf("pLuG iN tHE cOntrOlLeR\n Press f if you don't have one\n");
-        std::string f = "no";
-        std::cin >> f;
-        if (f == "f") return false;
-        else
-        {
-            DWORD controllerConnected = XInputGetState(0, &state);
-            if (controllerConnected == ERROR_SUCCESS) return true;
-        }
-    }
-    return true;
+    if (controllerConnected == ERROR_SUCCESS)  
+        return true;
+    else
+        return false;
 }
 
 float Controller::joystickMagnitude(LorR dir) {
