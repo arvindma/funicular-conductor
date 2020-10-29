@@ -123,7 +123,7 @@ void Module::velocityOptimiztion()
         velocity.angle = (previousVelocity.angle);
         velocity.magnitude = 0;
     }
-    float angleDifference = abs(velocity.getConstrainedAngle() + directionSwitchAngle * F_PI - previousVelocity.getConstrainedAngle());
+    float angleDifference = abs(ConstrainedAngle(velocity.angle + directionSwitchAngle * F_PI) - previousVelocity.getConstrainedAngle());
     if (angleDifference > F_PI)
         angleDifference = abs(2 * F_PI - angleDifference);
     

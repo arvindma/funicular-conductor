@@ -114,6 +114,8 @@ int main() {
                 module2.cacheVelocity();
                 module3.cacheVelocity();
 
+                system("cls");
+
                 printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity.magnitude, module1.velocity.angle * RAD_TO_DEG, module1.turns);
                 printf("Module 2 Angle and Speed and turns: %f, %.0f, %i\n", module2.velocity.magnitude, module2.velocity.angle * RAD_TO_DEG, module2.turns);
                 printf("Module 3 Angle and Speed and turns: %f, %.0f, %i\n", module3.velocity.magnitude, module3.velocity.angle * RAD_TO_DEG, module3.turns);
