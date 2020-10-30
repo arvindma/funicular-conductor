@@ -1,6 +1,8 @@
 ﻿#pragma once
+#include <Windows.h>
 #include <iostream>
 #include <string>
+#include <Xinput.h>
 #include "controller.h"
 #include "moduleMath.h"
 #include "comms.h"
@@ -120,8 +122,7 @@ int main() {
                 printf("Module 2 Angle and Speed and turns: %f, %.0f, %i\n", module2.velocity.magnitude, module2.velocity.angle * RAD_TO_DEG, module2.turns);
                 printf("Module 3 Angle and Speed and turns: %f, %.0f, %i\n", module3.velocity.magnitude, module3.velocity.angle * RAD_TO_DEG, module3.turns);
 
-                Radio::Packet packet;
-                SETFLAG(packet.flags, Radio::FLAG_ACK);
+                Radio::Packet packet = {};
                 SETFLAG(packet.flags, Radio::FLAG_ENABLE);
                 packet.a1 = module1.velocity.angle;
                 packet.a2 = module2.velocity.angle;
@@ -130,12 +131,8 @@ int main() {
                 packet.s2 = maxSpeed * module2.velocity.magnitude;
                 packet.s3 = maxSpeed * module3.velocity.magnitude;
 
-                if (Controller::isBPressed())
-                {
-                    packet.s1 = 0;
-                    packet.s2 = 0;
-                    packet.s3 = 0;
-                }
+                if (Controller::getButton(XINPUT_GAMEPAD_B))
+                    CLRFLAG(packet.flags, Radio::FLAG_ENABLE);
 
                 if (Radio::ready())
                     Radio::sendControlPacket(packet);
@@ -146,9 +143,33 @@ int main() {
                 if (Radio::packetAvailable())
                 {
                     Radio::ResponsePacket rxPacket = Radio::getLastPacket();
+
+                    if (GETFLAG(rxPacket.flags, Radio::RESPONSE_FLAG_BUSY))
+                    {
+                        system("cls");
+                        printf("waiting for robot");
+                        for (int i = 0; i < 9; i++)
+                        {
+                            printf(".");
+                            accurateDelay(1000);
+                        }
+                        printf("\n");
+                    }
+
+                    if (GETFLAG(rxPacket.flags, Radio::RESPONSE_FLAG_HOME_ERROR))
+                    {
+                        system("cls");
+                        printf("Homing error. Press B to exit");
+                        while (1)
+                        {
+                            if (Controller::getButton(XINPUT_GAMEPAD_B)) 
+                                exit(1);
+                            Sleep(20);
+                        }
+                    }
                 }
 
-                if (Controller::isBPressed())
+                if (Controller::getButton(XINPUT_GAMEPAD_B))
                 {
                     accurateDelay(1000 / 20);
                     exit(1);

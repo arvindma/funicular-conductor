@@ -1,4 +1,6 @@
-#pragma once
+#include <iostream>
+#include <cmath>
+#include "botConstants.h"
 #include "moduleMath.h"
 
 Module::Module(float pcmag, float pcang)

@@ -1,3 +1,9 @@
+#include <windows.h>
+#include <Xinput.h>
+#include <iostream>
+#include <string>
+
+#include "botConstants.h"
 #include "controller.h"
 
 bool Controller::controllerCheck() {
@@ -74,11 +80,17 @@ float Controller::triggersMagnitude() {
     return triggers;
 }
 
-boolean Controller::isBPressed() {
+boolean Controller::getButton(WORD button) {
     XINPUT_STATE state;
     DWORD controllerConnected = XInputGetState(0, &state);
-    if ((state.Gamepad.wButtons & 0x2000) != 0)
+    if (state.Gamepad.wButtons & button)
         return true;
     else
         return false;
+}
+
+WORD Controller::getButtons() {
+    XINPUT_STATE state;
+    DWORD controllerConnected = XInputGetState(0, &state);
+    return state.Gamepad.wButtons;
 }

@@ -18,5 +18,6 @@ namespace Controller {
     float joystickMagnitude(LorR);
     float joystickAngle(LorR);
     float triggersMagnitude();
-    boolean isBPressed();
+    boolean getButton(WORD);
+    WORD getButtons();
 }
