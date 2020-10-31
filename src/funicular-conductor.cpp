@@ -155,18 +155,6 @@ int main() {
                         }
                         printf("\n");
                     }
-
-                    if (GETFLAG(rxPacket.flags, Radio::RESPONSE_FLAG_HOME_ERROR))
-                    {
-                        system("cls");
-                        printf("Homing error. Press B to exit");
-                        while (1)
-                        {
-                            if (Controller::getButton(XINPUT_GAMEPAD_B)) 
-                                exit(1);
-                            Sleep(20);
-                        }
-                    }
                 }
 
                 if (Controller::getButton(XINPUT_GAMEPAD_B))
