@@ -100,7 +100,7 @@ int main() {
                 float rotationSpeed = Controller::triggersMagnitude();
                 PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
 
-                unsigned int maxSpeed = 120;
+                unsigned int maxSpeed = 60;
 
                 module1.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
                 module2.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
@@ -116,7 +116,6 @@ int main() {
                 module2.cacheVelocity();
                 module3.cacheVelocity();
 
-                system("cls");
 
                 printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity.magnitude, module1.velocity.angle * RAD_TO_DEG, module1.turns);
                 printf("Module 2 Angle and Speed and turns: %f, %.0f, %i\n", module2.velocity.magnitude, module2.velocity.angle * RAD_TO_DEG, module2.turns);
@@ -148,10 +147,14 @@ int main() {
                     {
                         system("cls");
                         printf("waiting for robot");
-                        for (int i = 0; i < 9; i++)
+                        while(1)
                         {
-                            printf(".");
-                            accurateDelay(1000);
+                            Radio::update();
+                            if (Radio::packetAvailable())
+                            {
+                                Radio::ResponsePacket rxPacket = Radio::getLastPacket();
+                                break;
+                            }
                         }
                         printf("\n");
                     }
