@@ -119,18 +119,27 @@ void Module::totalAngle() {
 }
 void Module::velocityOptimiztion()
 {
-    
+    float preOptimizedAngle = previousVelocity.angle - (directionSwitchAngle + turns * 2) * F_PI;
     if (abs(velocity.magnitude) < 0.01)
     {
-        velocity.angle = (previousVelocity.angle);
+        velocity.angle = preOptimizedAngle;
         velocity.magnitude = 0;
     }
-    float angleDifference = abs(ConstrainedAngle(velocity.angle + directionSwitchAngle * F_PI) - previousVelocity.getConstrainedAngle());
+
+    if (abs(velocity.magnitude) > 0)
+    {
+        if (velocity.angle < preOptimizedAngle - F_PI)
+            turns++;
+        if (velocity.angle > preOptimizedAngle + F_PI)
+            turns--;
+    }
+
+    float angleDifference = abs(velocity.angle - preOptimizedAngle);
     if (angleDifference > F_PI)
         angleDifference = abs(2 * F_PI - angleDifference);
     
     if (angleDifference > F_PI / 2) {
-        if (velocity.getConstrainedAngle() > previousVelocity.getConstrainedAngle()) {
+        if (velocity.angle > preOptimizedAngle) {
             directionSwitchAngle--;
         }
         else {
@@ -140,10 +149,5 @@ void Module::velocityOptimiztion()
     }
     
     velocity.magnitude *= directionSwitch;
-    totalAngle();
-    if (abs(velocity.magnitude) < 0.01)
-    {
-        velocity.angle = (previousVelocity.angle);
-        velocity.magnitude = 0;
-    }
+    velocity.angle += (directionSwitchAngle + turns * 2) * F_PI;
 }
