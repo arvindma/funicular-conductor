@@ -104,19 +104,7 @@ void normalizingSpeeds(Module& mod1, Module& mod2, Module& mod3)
     mod2.velocity.magnitude /= n;
     mod3.velocity.magnitude /= n;
 }
-void Module::totalAngle() {
-    velocity.angle += (directionSwitchAngle) * F_PI;
-    if (abs(velocity.magnitude) > 0) 
-    {
-        if (ConstrainedAngle(velocity.angle + directionSwitchAngle % 2 * F_PI) < 
-            ConstrainedAngle(previousVelocity.angle + directionSwitchAngle % 2 * F_PI) - F_PI)
-            turns++;
-        if (ConstrainedAngle(velocity.angle + directionSwitchAngle % 2 * F_PI) > 
-            ConstrainedAngle(previousVelocity.angle + directionSwitchAngle % 2 * F_PI) + F_PI)
-            turns--;
-    }
-    velocity.angle += (turns * 2) * F_PI;
-}
+
 void Module::velocityOptimiztion()
 {
     float preOptimizedAngle = previousVelocity.angle - (directionSwitchAngle + turns * 2) * F_PI;
@@ -128,9 +116,9 @@ void Module::velocityOptimiztion()
 
     if (abs(velocity.magnitude) > 0)
     {
-        if (velocity.angle < preOptimizedAngle - F_PI)
+        if (velocity.angle < preOptimizedAngle - (F_PI + 0.0349066))
             turns++;
-        if (velocity.angle > preOptimizedAngle + F_PI)
+        if (velocity.angle > preOptimizedAngle + (F_PI + 0.0349066))
             turns--;
     }
 
