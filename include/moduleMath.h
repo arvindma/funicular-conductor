@@ -40,12 +40,11 @@ public:
 class Module
 {
 public:
-    Velocity velocity = Velocity(0.0, 0.0);
-    Velocity previousVelocity = Velocity(0.0, 0.0);
+    Velocity velocity[3] = { Velocity(0.0, 0.0), Velocity(0.0, 0.0), Velocity(0.0, 0.0) };
     float normalizingFactor = 1;
-    int turns = 0;
-    int directionSwitchAngle = 0;
-    int directionSwitch = 1;
+    int turns [3] = { 0, 0, 0 };
+    int directionSwitchAngle[3] = { 0, 0, 0 };
+    int directionSwitch[3] = { 1, 1, 1 };
 
 
     Module(float, float);

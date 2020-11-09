@@ -109,6 +109,7 @@ int main() {
                 normalizingSpeeds(module1, module2, module3);
 
                 
+                
                 module1.velocityOptimiztion();
                 module2.velocityOptimiztion();
                 module3.velocityOptimiztion();
@@ -116,24 +117,20 @@ int main() {
                 module1.cacheVelocity();
                 module2.cacheVelocity();
                 module3.cacheVelocity();
-
-
-                
-
                 
                 cout << string(100, '\n');
-                printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity.magnitude, module1.velocity.angle * RAD_TO_DEG, module1.turns);
-                printf("Module 2 Angle and Speed and turns: %f, %.0f, %i\n", module2.velocity.magnitude, module2.velocity.angle * RAD_TO_DEG, module2.turns);
-                printf("Module 3 Angle and Speed and turns: %f, %.0f, %i\n", module3.velocity.magnitude, module3.velocity.angle * RAD_TO_DEG, module3.turns);
+                printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity[1].magnitude, module1.velocity[1].angle * RAD_TO_DEG, module1.turns[1]);
+                printf("Module 2 Angle and Speed and turns: %f, %.0f, %i\n", module2.velocity[1].magnitude, module2.velocity[1].angle * RAD_TO_DEG, module2.turns[1]);
+                printf("Module 3 Angle and Speed and turns: %f, %.0f, %i\n", module3.velocity[1].magnitude, module3.velocity[1].angle * RAD_TO_DEG, module3.turns[1]);
 
                 Radio::Packet packet = {};
                 SETFLAG(packet.flags, Radio::FLAG_ENABLE);
-                packet.a1 = module1.velocity.angle;
-                packet.a2 = module2.velocity.angle;
-                packet.a3 = module3.velocity.angle;
-                packet.s1 = maxSpeed * module1.velocity.magnitude;
-                packet.s2 = maxSpeed * module2.velocity.magnitude;
-                packet.s3 = maxSpeed * module3.velocity.magnitude;
+                packet.a1 = module1.velocity[1].angle;
+                packet.a2 = module2.velocity[1].angle;
+                packet.a3 = module3.velocity[1].angle;
+                packet.s1 = maxSpeed * module1.velocity[1].magnitude;
+                packet.s2 = maxSpeed * module2.velocity[1].magnitude;
+                packet.s3 = maxSpeed * module3.velocity[1].magnitude;
 
                 if (Controller::getButton(XINPUT_GAMEPAD_B))
                     CLRFLAG(packet.flags, Radio::FLAG_ENABLE);

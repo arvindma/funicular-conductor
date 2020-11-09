@@ -10,7 +10,13 @@ Module::Module(float pcmag, float pcang)
 
 void Module::cacheVelocity()
 {
-    previousVelocity = velocity;
+    for (int i = 0; i < 3 - 1; i++) {
+        turns[i + 1] = turns[i];
+        directionSwitchAngle[i + 1] = directionSwitchAngle[i];
+        directionSwitch[i + 1] = directionSwitch[i];
+        velocity[i + 1] = velocity[i];
+    }
+    
 }
 
 float distanceBetween(float r1, float theta1, float r2, float theta2)
@@ -88,7 +94,7 @@ void Module::botToWheelVelocity(PolarCoordinates rotationCenter, float rotationS
         normalizingFactor = 1.0;
     velocityOutput.magnitude = prenormalizedOutput.magnitude;
     velocityOutput.angle = (prenormalizedOutput.getConstrainedAngle());
-    velocity = velocityOutput;
+    velocity[0] = velocityOutput;
 }
 
 void normalizingSpeeds(Module& mod1, Module& mod2, Module& mod3)
@@ -100,42 +106,56 @@ void normalizingSpeeds(Module& mod1, Module& mod2, Module& mod3)
         n = mod3.normalizingFactor;
     if (n < 1.0f)
         n = 1.0f;
-    mod1.velocity.magnitude /= n;
-    mod2.velocity.magnitude /= n;
-    mod3.velocity.magnitude /= n;
+    mod1.velocity[0].magnitude /= n;
+    mod2.velocity[0].magnitude /= n;
+    mod3.velocity[0].magnitude /= n;
 }
 
 void Module::velocityOptimiztion()
 {
-    float preOptimizedAngle = previousVelocity.angle - (directionSwitchAngle + turns * 2) * F_PI;
-    if (abs(velocity.magnitude) < 0.01)
-    {
-        velocity.angle = preOptimizedAngle;
-        velocity.magnitude = 0;
-    }
-
-    if (abs(velocity.magnitude) > 0)
-    {
-        if (velocity.angle < preOptimizedAngle - (F_PI + 0.0349066))
-            turns++;
-        if (velocity.angle > preOptimizedAngle + (F_PI + 0.0349066))
-            turns--;
-    }
-
-    float angleDifference = abs(velocity.angle - preOptimizedAngle);
-    if (angleDifference > F_PI)
-        angleDifference = abs(2 * F_PI - angleDifference);
-    
-    if (angleDifference > F_PI / 2) {
-        if (velocity.angle > preOptimizedAngle) {
-            directionSwitchAngle--;
-        }
-        else {
-            directionSwitchAngle++;
-        }
-            directionSwitch *= -1;
+    float preOptimizedAngle[2];
+    for (int i = 0; i < 2; i++) {
+        preOptimizedAngle[i] = velocity[i+1].angle - (directionSwitchAngle[i+1] + turns[i+1] * 2) * F_PI;
     }
     
-    velocity.magnitude *= directionSwitch;
-    velocity.angle += (directionSwitchAngle + turns * 2) * F_PI;
+    if (abs(velocity[0].magnitude) < 0.01)
+    {
+        velocity[0].angle = preOptimizedAngle[0];
+        velocity[0].magnitude = 0;
+    }
+    int preturns = turns[1];
+    if (abs(velocity[0].magnitude) > 0)
+    {
+        if (velocity[0].angle < preOptimizedAngle[0] - (F_PI + 0.0349066))
+            turns[0] = turns[1] + 1;
+        if (velocity[0].angle > preOptimizedAngle[0] + (F_PI + 0.0349066))
+            turns[0] = turns[1] - 1;
+    }
+    for (int i = 0; i < 2; i++) {
+        float angleDifference = abs(velocity[0].angle - preOptimizedAngle[i]);
+        if (angleDifference > F_PI)
+            angleDifference = abs(2 * F_PI - angleDifference);
+
+        
+        if (angleDifference * 20 > 15.708) {
+            if (angleDifference > F_PI / 2) {
+                if (velocity[0].angle > preOptimizedAngle[i]) {
+                    directionSwitchAngle[0] = directionSwitchAngle[1] - 1;
+                }
+                else {
+                    directionSwitchAngle[0] = directionSwitchAngle[1] + 1;
+                }
+
+                directionSwitch[0] = directionSwitch[1] * -1;
+
+                if (preturns > turns[0])
+                    turns[0]++;
+                else if (preturns < turns[0])
+                    turns[0]--;
+            }
+        }
+        
+    }
+    velocity[0].magnitude *= directionSwitch[0];
+    velocity[0].angle += (directionSwitchAngle[0] + turns[0] * 2) * F_PI;
 }
