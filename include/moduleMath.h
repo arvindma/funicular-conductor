@@ -51,10 +51,8 @@ public:
 
     void cacheVelocity();
     void botToWheelVelocity(PolarCoordinates, float, Velocity);
-    void totalAngle();
     void velocityOptimiztion();
 
-private:
     PolarCoordinates position;
 };
 

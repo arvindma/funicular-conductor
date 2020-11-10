@@ -135,9 +135,9 @@ void Module::velocityOptimiztion()
         float angleDifference = abs(velocity[0].angle - preOptimizedAngle[i]);
         if (angleDifference > F_PI)
             angleDifference = abs(2 * F_PI - angleDifference);
-
+        float angularSpeed = angleDifference * 20.0 / (i + 1);
         
-        if (angleDifference * 20 > 15.708) {
+        if (angularSpeed > MAX_ANGULAR_SPEED) {
             if (angleDifference > F_PI / 2) {
                 if (velocity[0].angle > preOptimizedAngle[i]) {
                     directionSwitchAngle[0] = directionSwitchAngle[1] - 1;
@@ -152,6 +152,7 @@ void Module::velocityOptimiztion()
                     turns[0]++;
                 else if (preturns < turns[0])
                     turns[0]--;
+                break;
             }
         }
         
