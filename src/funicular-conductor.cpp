@@ -9,6 +9,7 @@
 
 using namespace std;
 void accurateDelay(unsigned long);
+void clear();
 
 //int main() {
 //    Radio::initialize();
@@ -80,124 +81,109 @@ void clear() {
 
 
 int main() {
-    cout << "1 -> Controller Mode\n2 -> Position Mode\n";
-    int mode = 1;
-
-    while (1)
-    {
-        string modeIn;
-        std::getline(cin, modeIn);
-
-        try
-        {
-            mode = stoi(modeIn);
-        }
-        catch (exception ex)
-        {
-            cout << "Noooo!";
-        }
-        if (mode > 0 && mode < 3)
-            break;
-        cout << "Whoops..." << endl;
-    }
-
-
     //Radio::initialize();
 
-    if (mode == 1) {//Controller Mode 
-        printf("YAY! CONTROLLERS\n");
+    Module module1(MODULEP_MAGNITUDE, MODULEP1_ANGLE),
+        module2(MODULEP_MAGNITUDE, MODULEP2_ANGLE),
+        module3(MODULEP_MAGNITUDE, MODULEP3_ANGLE);
 
-        Module module1(MODULEP_MAGNITUDE, MODULEP1_ANGLE),
-            module2(MODULEP_MAGNITUDE, MODULEP2_ANGLE),
-            module3(MODULEP_MAGNITUDE, MODULEP3_ANGLE);
+    float botAngle = 0.0f;
+    unsigned int maxSpeed = 60;
 
-        float botAngle = 0.0f;
+    if (Controller::controllerCheck()) {
+        while (true) {
 
-        if (Controller::controllerCheck()) {
-            while (true) {
+            Velocity translationSpeed = joystickToVelocity(Controller::joystickMagnitude(LorR::L), Controller::joystickAngle(LorR::L));
+            float rotationSpeed = Controller::triggersMagnitude();
+            PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
 
-                Velocity translationSpeed = joystickToVelocity(Controller::joystickMagnitude(LorR::L), Controller::joystickAngle(LorR::L));
-                float rotationSpeed = Controller::triggersMagnitude();
-                PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
+            module1.position.angle += botAngle;
+            module2.position.angle += botAngle;
+            module3.position.angle += botAngle;
 
-                unsigned int maxSpeed = 120;
+            module1.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
+            module2.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
+            module3.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
 
-                module1.position.angle += botAngle;
-                module2.position.angle += botAngle;
-                module3.position.angle += botAngle;
-
-                module1.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
-                module2.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
-                module3.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
-
-                normalizingSpeeds(module1, module2, module3);
+            normalizingSpeeds(module1, module2, module3);
                 
-                module1.velocityOptimiztion();
-                module2.velocityOptimiztion();
-                module3.velocityOptimiztion();
+            module1.velocityOptimiztion();
+            module2.velocityOptimiztion();
+            module3.velocityOptimiztion();
 
-                clear();
-                printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity[0].magnitude, module1.velocity[0].angle * RAD_TO_DEG, module1.turns[1]);
-                printf("Module 2 Angle and Speed and turns: %f, %.0f, %i\n", module2.velocity[0].magnitude, module2.velocity[0].angle * RAD_TO_DEG, module2.turns[1]);
-                printf("Module 3 Angle and Speed and turns: %f, %.0f, %i\n", module3.velocity[0].magnitude, module3.velocity[0].angle * RAD_TO_DEG, module3.turns[1]);
+            clear();
+            printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity[0].magnitude, module1.velocity[0].angle * RAD_TO_DEG, module1.turns[1]);
+            printf("Module 2 Angle and Speed and turns: %f, %.0f, %i\n", module2.velocity[0].magnitude, module2.velocity[0].angle * RAD_TO_DEG, module2.turns[1]);
+            printf("Module 3 Angle and Speed and turns: %f, %.0f, %i\n", module3.velocity[0].magnitude, module3.velocity[0].angle * RAD_TO_DEG, module3.turns[1]);
                 
-                Radio::Packet packet = {};
-                SETFLAG(packet.flags, Radio::FLAG_ENABLE);
-                packet.a1 = module1.velocity[0].angle;
-                packet.a2 = module2.velocity[0].angle;
-                packet.a3 = module3.velocity[0].angle;
-                packet.s1 = maxSpeed * module1.velocity[0].magnitude;
-                packet.s2 = maxSpeed * module2.velocity[0].magnitude;
-                packet.s3 = maxSpeed * module3.velocity[0].magnitude;
+            if (Controller::getButton(XINPUT_GAMEPAD_X))
+                maxSpeed = 40;
+            else
+                maxSpeed = 120;
 
-                module1.cacheVelocity();
-                module2.cacheVelocity();
-                module3.cacheVelocity();
+            Radio::Packet packet = {};
+            SETFLAG(packet.flags, Radio::FLAG_ENABLE);
+            packet.a1 = module1.velocity[0].angle;
+            packet.a2 = module2.velocity[0].angle;
+            packet.a3 = module3.velocity[0].angle;
+            packet.s1 = maxSpeed * module1.velocity[0].magnitude;
+            packet.s2 = maxSpeed * module2.velocity[0].magnitude;
+            packet.s3 = maxSpeed * module3.velocity[0].magnitude;
 
-                if (Controller::getButton(XINPUT_GAMEPAD_B))
-                    CLRFLAG(packet.flags, Radio::FLAG_ENABLE);
+            module1.cacheVelocity();
+            module2.cacheVelocity();
+            module3.cacheVelocity();
 
-                /*if (Radio::ready())
-                    Radio::sendControlPacket(packet);*/
+            if (Radio::ready())
+                Radio::sendControlPacket(packet);
 
-                accurateDelay(1000 / 20);
+            accurateDelay(1000 / 20);
 
-                /*Radio::update();
-                if (Radio::packetAvailable())
+            Radio::update();
+            if (Radio::packetAvailable())
+            {
+                Radio::ResponsePacket rxPacket = Radio::getLastPacket();
+
+                botAngle = rxPacket.angle;
+
+                if (GETFLAG(rxPacket.flags, Radio::RESPONSE_FLAG_BUSY))
                 {
-                    Radio::ResponsePacket rxPacket = Radio::getLastPacket();
-
-                    if (GETFLAG(rxPacket.flags, Radio::RESPONSE_FLAG_BUSY))
+                    clear();
+                    printf("waiting for robot");
+                    while (1)
                     {
-                        system("cls");
-                        printf("waiting for robot");
-                        for (int i = 0; i < 9; i++)
+                        Radio::update();
+                        if (Radio::packetAvailable())
                         {
-                            printf(".");
-                            accurateDelay(1000);
+                            Radio::ResponsePacket rxPacket = Radio::getLastPacket();
+                            break;
                         }
-                        printf("\n");
+                        if (Controller::getButton(XINPUT_GAMEPAD_B))
+                        {
+                            accurateDelay(1000 / 20);
+                            exit(1);
+                        }
                     }
-                }*/
-
-                if (Controller::getButton(XINPUT_GAMEPAD_B))
-                {
-                    accurateDelay(1000 / 20);
-                    exit(1);
                 }
+            }
+
+            if (Controller::getButton(XINPUT_GAMEPAD_B))
+            {
+                Radio::Packet packet = {};
+                CLRFLAG(packet.flags, Radio::FLAG_ENABLE);
+                if (Radio::ready())
+                    Radio::sendControlPacket(packet);
+                accurateDelay(1000 / 20);
+                exit(1);
             }
         }
     }
 
-    if (mode == 2) { //Position Mode
-        printf("YAY! POSITION\n");
-    }
-
-    printf("Press q to exit\n");
+    printf("No connection with controller. Press q to exit.\n");
     string end;
     std::getline(cin, end);
     while (end != "q") {
-        printf("That wasn't q...\n");
+        printf("Noooo!\n");
         std::getline(cin, end);
     }
 }
