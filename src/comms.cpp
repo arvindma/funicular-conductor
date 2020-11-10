@@ -110,6 +110,7 @@ void packetHandler(const void* sender, const uint8_t* data, unsigned long size)
     if (crc != data[RESPONSE_PACKET_CRC_OFFSET]) return;
     ResponsePacket temp;
     temp.flags = (data[RESPONSE_PACKET_FLAGS_OFFSET] << 8) + data[RESPONSE_PACKET_FLAGS_OFFSET + 1];
+    temp.angle = readFloat(data, RESPONSE_PACKET_ANGLE_OFFSET);
     temp.crc = crc;
     rxPacket = temp;
     newDataAvailable = true;
