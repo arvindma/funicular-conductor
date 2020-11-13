@@ -88,6 +88,7 @@ int main() {
         module3(MODULEP_MAGNITUDE, MODULEP3_ANGLE);
 
     float botAngle = 0.0f;
+    float botAngleOffset = 0.0f;
     unsigned int maxSpeed = 60;
 
     if (Controller::controllerCheck()) {
@@ -97,9 +98,9 @@ int main() {
             float rotationSpeed = Controller::triggersMagnitude();
             PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
 
-            module1.position.angle += botAngle;
-            module2.position.angle += botAngle;
-            module3.position.angle += botAngle;
+            module1.position.angle += botAngle - botAngleOffset;
+            module2.position.angle += botAngle - botAngleOffset;
+            module3.position.angle += botAngle - botAngleOffset;
 
             module1.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
             module2.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
@@ -112,10 +113,10 @@ int main() {
             module3.velocityOptimiztion();
 
             //clear();
-            printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity[0].magnitude, module1.velocity[0].angle * RAD_TO_DEG, module1.turns[1]);
+            /*printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity[0].magnitude, module1.velocity[0].angle * RAD_TO_DEG, module1.turns[1]);
             printf("Module 2 Angle and Speed and turns: %f, %.0f, %i\n", module2.velocity[0].magnitude, module2.velocity[0].angle * RAD_TO_DEG, module2.turns[1]);
             printf("Module 3 Angle and Speed and turns: %f, %.0f, %i\n", module3.velocity[0].magnitude, module3.velocity[0].angle * RAD_TO_DEG, module3.turns[1]);
-                
+                */
             if (Controller::getButton(XINPUT_GAMEPAD_X))
                 maxSpeed = 40;
             else
@@ -145,6 +146,8 @@ int main() {
                 Radio::ResponsePacket rxPacket = Radio::getLastPacket();
 
                 botAngle = rxPacket.angle;
+                if (Controller::getButton(XINPUT_GAMEPAD_Y))
+                    botAngleOffset = botAngle;
 
                 if (GETFLAG(rxPacket.flags, Radio::RESPONSE_FLAG_BUSY))
                 {
