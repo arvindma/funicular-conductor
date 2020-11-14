@@ -45,7 +45,7 @@ public:
     int turns [3] = { 0, 0, 0 };
     int directionSwitchAngle[3] = { 0, 0, 0 };
     int directionSwitch[3] = { 1, 1, 1 };
-    float angleOffset = 0.0f;
+    
 
 
     Module(float, float);

@@ -89,6 +89,7 @@ int main() {
 
     float botAngle = 0.0f;
     float botAngleOffset = 0.0f;
+    float angleOffset = 0.0f;
     unsigned int maxSpeed = 60;
 
     if (Controller::controllerCheck()) {
@@ -98,10 +99,8 @@ int main() {
             float rotationSpeed = Controller::triggersMagnitude();
             PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
 
-            module1.angleOffset = botAngle - botAngleOffset;
-            module2.angleOffset = botAngle - botAngleOffset;
-            module3.angleOffset = botAngle - botAngleOffset;
-
+            angleOffset = botAngle - botAngleOffset;
+          
             module1.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
             module2.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
             module3.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
@@ -111,6 +110,10 @@ int main() {
             module1.velocityOptimiztion();
             module2.velocityOptimiztion();
             module3.velocityOptimiztion();
+
+            module1.velocity[0].angle += angleOffset;
+            module2.velocity[0].angle += angleOffset;
+            module3.velocity[0].angle += angleOffset;
 
             //clear();
             printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity[0].magnitude, module1.velocity[0].angle * RAD_TO_DEG, module1.turns[1]);
