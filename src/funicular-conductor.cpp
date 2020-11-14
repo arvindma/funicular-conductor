@@ -98,9 +98,9 @@ int main() {
             float rotationSpeed = Controller::triggersMagnitude();
             PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
 
-            module1.position.angle += botAngle - botAngleOffset;
-            module2.position.angle += botAngle - botAngleOffset;
-            module3.position.angle += botAngle - botAngleOffset;
+            module1.angleOffset = botAngle - botAngleOffset;
+            module2.angleOffset = botAngle - botAngleOffset;
+            module3.angleOffset = botAngle - botAngleOffset;
 
             module1.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
             module2.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);

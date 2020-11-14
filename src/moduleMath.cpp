@@ -72,8 +72,8 @@ void Module::botToWheelVelocity(PolarCoordinates rotationCenter, float rotationS
 { // Velocities should be normalized from 0 to 1
 
     PolarCoordinates deltacmp(0.0, 0.0); //Difference between center of rotation and module position (which is nothing when cR is (0,0))
-    deltacmp.magnitude = distanceBetween(position.magnitude, position.getConstrainedAngle(), rotationCenter.magnitude, rotationCenter.getConstrainedAngle());
-    deltacmp.angle = (angleBetween(position.magnitude, position.getConstrainedAngle(), rotationCenter.magnitude, rotationCenter.getConstrainedAngle()));
+    deltacmp.magnitude = distanceBetween(position.magnitude, ConstrainedAngle(position.angle + angleOffset), rotationCenter.magnitude, rotationCenter.getConstrainedAngle());
+    deltacmp.angle = (angleBetween(position.magnitude, ConstrainedAngle(position.angle + angleOffset), rotationCenter.magnitude, rotationCenter.getConstrainedAngle()));
 
     Velocity rotationVector(0.0, 0.0);
     rotationSpeed = rotationSpeed / MODULEP_MAGNITUDE;
