@@ -19,37 +19,50 @@ void Module::cacheVelocity()
     
 }
 
-float distanceBetween(float r1, float theta1, float r2, float theta2)
-{
-    return sqrt(r1 * r1 + r2 * r2 + 2 * r1 * r2 * cos(theta2 - theta1));
+PolarCoordinates CartesianCoordinates::toPolar() {
+    PolarCoordinates returnCoord(sqrt(x * x + y * y), ConstrainedAngle(atan2(y, x)));
+    return returnCoord;
 }
 
-float angleBetween(float r1, float theta1, float r2, float theta2)
-{
-    float angleOutput = theta1 - asin((r2 * sin(theta2 - theta1)) / (distanceBetween(r1, theta1, r2, theta2)));
-    return angleOutput;
+CartesianCoordinates PolarCoordinates::toCartesian() {
+    CartesianCoordinates returnCoord(magnitude * cos(angle), magnitude * sin(angle));
+    return returnCoord;
 }
+
+Velocity PolarCoordinates::toVelocity() {
+    Velocity x(magnitude, angle);
+    return x;
+}
+
+
+PolarCoordinates polarAddition(PolarCoordinates coord1, PolarCoordinates coord2)
+{   
+    if (coord1.magnitude > 0.01 && coord2.magnitude > 0.01) {
+        CartesianCoordinates temp1 = coord1.toCartesian();
+        CartesianCoordinates temp2 = coord2.toCartesian();
+
+        CartesianCoordinates returnCart(temp1.x + temp2.x, temp1.y + temp2.y);
+
+        return returnCart.toPolar();
+    }
+    else if (coord1.magnitude < 0.01 & coord2.magnitude > 0.01) {
+        return coord2;
+    }
+    else {
+        return coord1;
+    }
+    
+
+    
+}
+
+
+
 
 Velocity joystickToVelocity(float normalizedJoystick, float angle)
 {
     Velocity velocityOutput(normalizedJoystick, angle);
     return velocityOutput;
-}
-
-Velocity velocityAddition(const Velocity& v1, const Velocity& v2)
-{
-    if (v1.magnitude != 0 && v2.magnitude != 0) {
-        Velocity velocityOutput(0.0, 0.0);
-        velocityOutput.magnitude = distanceBetween(v1.magnitude, v1.getConstrainedAngle(), v2.magnitude, v2.getConstrainedAngle());
-        velocityOutput.angle = (v1.getConstrainedAngle() + atan2f(v2.magnitude * sin(v2.getConstrainedAngle() - v1.getConstrainedAngle()), v1.magnitude + v2.magnitude * cos(v2.getConstrainedAngle() - v1.getConstrainedAngle())));
-        return velocityOutput;
-    }
-    else if (v1.magnitude == 0 && v2.magnitude == 0)
-        return Velocity(0, 0);
-    else if (v2.magnitude == 0)
-        return v1;
-    else
-        return v2;
 }
 
 float ConstrainedAngle(float angle)
@@ -70,30 +83,20 @@ float ConstrainedAngle(float angle)
 
 void Module::botToWheelVelocity(PolarCoordinates rotationCenter, float rotationSpeed, Velocity translationSpeed)
 { // Velocities should be normalized from 0 to 1
+    rotationCenter.magnitude *= -1;
+    PolarCoordinates positionTemp(position.magnitude, position.angle);
+    PolarCoordinates deltacmp = polarAddition(positionTemp, rotationCenter);
 
-    PolarCoordinates deltacmp(0.0, 0.0); //Difference between center of rotation and module position (which is nothing when cR is (0,0))
-    deltacmp.magnitude = distanceBetween(position.magnitude, position.angle, rotationCenter.magnitude, rotationCenter.getConstrainedAngle());
-    deltacmp.angle = (angleBetween(position.magnitude, position.angle, rotationCenter.magnitude, rotationCenter.getConstrainedAngle()));
+    rotationSpeed /= MODULEP_MAGNITUDE;
+    Velocity rotationVector(positionTemp.magnitude * abs(rotationSpeed), positionTemp.getConstrainedAngle() - (F_PI / 2 * rotationSpeed / abs(rotationSpeed)));
+    
+    Velocity velocityOutput = polarAddition(rotationVector, translationSpeed).toVelocity();
 
-    Velocity rotationVector(0.0, 0.0);
-    rotationSpeed = rotationSpeed / MODULEP_MAGNITUDE;
-    rotationVector.magnitude = deltacmp.magnitude * abs(rotationSpeed);
-    rotationVector.angle = (deltacmp.getConstrainedAngle() - (F_PI / 2 * rotationSpeed / abs(rotationSpeed)));
-
-    Velocity prenormalizedOutput = velocityAddition(rotationVector, translationSpeed);
-
-    Velocity velocityOutput(0, 0);
-    if (prenormalizedOutput.magnitude > 1) {
-        translationSpeed.magnitude = translationSpeed.magnitude / (translationSpeed.magnitude + rotationVector.magnitude);
-        rotationVector.magnitude = rotationVector.magnitude / (translationSpeed.magnitude + rotationVector.magnitude);
-        prenormalizedOutput = velocityAddition(rotationVector, translationSpeed);
-    }
-    if (prenormalizedOutput.magnitude > 1)
-        normalizingFactor = prenormalizedOutput.magnitude;
+    if (velocityOutput.magnitude > 1)
+        normalizingFactor = velocityOutput.magnitude;
     else
         normalizingFactor = 1.0;
-    velocityOutput.magnitude = prenormalizedOutput.magnitude;
-    velocityOutput.angle = (prenormalizedOutput.getConstrainedAngle());
+
     velocity[0] = velocityOutput;
 }
 
@@ -135,7 +138,7 @@ void Module::velocityOptimiztion()
         float angleDifference = abs(velocity[0].angle - preOptimizedAngle[i]);
         if (angleDifference > F_PI)
             angleDifference = abs(2 * F_PI - angleDifference);
-        float angularSpeed = angleDifference * 20.0 / (i + 1);
+        float angularSpeed = angleDifference * 20.0f / (i + 1);
         
         if (angularSpeed > MAX_ANGULAR_SPEED) {
             if (angleDifference > F_PI / 2) {

@@ -81,7 +81,7 @@ void clear() {
 
 
 int main() {
-    Radio::initialize();
+    //Radio::initialize();
 
     Module module1(MODULEP_MAGNITUDE, MODULEP1_ANGLE),
         module2(MODULEP_MAGNITUDE, MODULEP2_ANGLE),
@@ -95,11 +95,17 @@ int main() {
     if (Controller::controllerCheck()) {
         while (true) {
 
-            Velocity translationSpeed = joystickToVelocity(Controller::joystickMagnitude(LorR::L), Controller::joystickAngle(LorR::L));
+            
+
+            Velocity translationSpeed = joystickToVelocity(Controller::joystickMagnitude(LorR::L), Controller::joystickAngle(LorR::L) + angleOffset);
             float rotationSpeed = Controller::triggersMagnitude();
             PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
 
-            angleOffset = botAngle - botAngleOffset;
+            
+
+            
+            
+
           
             module1.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
             module2.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
@@ -111,11 +117,9 @@ int main() {
             module2.velocityOptimiztion();
             module3.velocityOptimiztion();
 
-            module1.velocity[0].angle += angleOffset;
-            module2.velocity[0].angle += angleOffset;
-            module3.velocity[0].angle += angleOffset;
+            
 
-            //clear();
+            clear();
             printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity[0].magnitude, module1.velocity[0].angle * RAD_TO_DEG, module1.turns[1]);
             printf("Module 2 Angle and Speed and turns: %f, %.0f, %i\n", module2.velocity[0].magnitude, module2.velocity[0].angle * RAD_TO_DEG, module2.turns[1]);
             printf("Module 3 Angle and Speed and turns: %f, %.0f, %i\n", module3.velocity[0].magnitude, module3.velocity[0].angle * RAD_TO_DEG, module3.turns[1]);
@@ -137,6 +141,8 @@ int main() {
             module1.cacheVelocity();
             module2.cacheVelocity();
             module3.cacheVelocity();
+
+            angleOffset = 10.0f;
 
             if (Radio::ready())
                 Radio::sendControlPacket(packet);

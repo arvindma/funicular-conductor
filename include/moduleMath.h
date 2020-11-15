@@ -3,8 +3,8 @@
 #include <iostream>
 #include <cmath>
 #include "botConstants.h"
-
-
+class Velocity;
+class CartesianCoordinates;
 class PolarCoordinates {
 public:
     float getConstrainedAngle() const
@@ -22,6 +22,9 @@ public:
         return tempAngle;
     }
 
+    CartesianCoordinates toCartesian();
+    Velocity toVelocity();
+
     PolarCoordinates(): magnitude(0), angle(0) {}
     PolarCoordinates(float magnitude_, float angle_): magnitude(magnitude_), angle(angle_) {}
 
@@ -30,6 +33,15 @@ public:
     float angle;
 };
 
+class CartesianCoordinates {
+public:
+    PolarCoordinates toPolar();
+
+    CartesianCoordinates(float x_, float y_) : x(x_), y(y_) {}
+public:
+    float x;
+    float y;
+};
 
 class Velocity : public PolarCoordinates {
 public:
@@ -58,13 +70,12 @@ private:
     PolarCoordinates position;
 };
 
-float distanceBetween(float, float, float, float);
-
-float angleBetween(float, float, float, float);
 
 Velocity joystickToVelocity(float, float);
 
-Velocity velocityAddition(const Velocity &, const Velocity &);
+PolarCoordinates polarAddition(PolarCoordinates,PolarCoordinates);
+
+
 
 void normalizingSpeeds(Module &, Module &, Module &);
 
