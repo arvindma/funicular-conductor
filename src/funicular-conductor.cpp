@@ -102,7 +102,9 @@ int main() {
             PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
 
             
-
+            
+            printf( "%f\n", translationSpeed.angle * RAD_TO_DEG);
+            
             
             
 
@@ -142,7 +144,7 @@ int main() {
             module2.cacheVelocity();
             module3.cacheVelocity();
 
-            angleOffset = 10.0f;
+            angleOffset = 10.0f *DEG_TO_RAD;
 
             if (Radio::ready())
                 Radio::sendControlPacket(packet);
