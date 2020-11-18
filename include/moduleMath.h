@@ -5,6 +5,8 @@
 #include "botConstants.h"
 class Velocity;
 class CartesianCoordinates;
+
+
 class PolarCoordinates {
 public:
     float getConstrainedAngle() const
@@ -20,6 +22,11 @@ public:
             tempAngle = fmod(tempAngle, 2 * F_PI);
         }
         return tempAngle;
+    }
+
+    PolarCoordinates operator-()
+    {
+        return PolarCoordinates(-magnitude, angle);
     }
 
     CartesianCoordinates toCartesian();

@@ -81,7 +81,7 @@ void clear() {
 
 
 int main() {
-    //Radio::initialize();
+   Radio::initialize();
 
     Module module1(MODULEP_MAGNITUDE, MODULEP1_ANGLE),
         module2(MODULEP_MAGNITUDE, MODULEP2_ANGLE),
@@ -94,21 +94,10 @@ int main() {
 
     if (Controller::controllerCheck()) {
         while (true) {
-
-            
-
-            Velocity translationSpeed = joystickToVelocity(Controller::joystickMagnitude(LorR::L), Controller::joystickAngle(LorR::L) + angleOffset);
+            Velocity translationSpeed = joystickToVelocity(Controller::joystickMagnitude(LorR::L), Controller::joystickAngle(LorR::L) - angleOffset);
             float rotationSpeed = Controller::triggersMagnitude();
-            PolarCoordinates rotationCenter(MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
+            PolarCoordinates rotationCenter(3* MODULEP_MAGNITUDE * Controller::joystickMagnitude(LorR::R), Controller::joystickAngle(LorR::R)); //Center of rotation
 
-            
-            
-            printf( "%f\n", translationSpeed.angle * RAD_TO_DEG);
-            
-            
-            
-
-          
             module1.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
             module2.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
             module3.botToWheelVelocity(rotationCenter, rotationSpeed, translationSpeed);
@@ -121,15 +110,27 @@ int main() {
 
             
 
-            clear();
+           /* clear();
             printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity[0].magnitude, module1.velocity[0].angle * RAD_TO_DEG, module1.turns[1]);
             printf("Module 2 Angle and Speed and turns: %f, %.0f, %i\n", module2.velocity[0].magnitude, module2.velocity[0].angle * RAD_TO_DEG, module2.turns[1]);
-            printf("Module 3 Angle and Speed and turns: %f, %.0f, %i\n", module3.velocity[0].magnitude, module3.velocity[0].angle * RAD_TO_DEG, module3.turns[1]);
-                
-            if (Controller::getButton(XINPUT_GAMEPAD_X))
-                maxSpeed = 40;
-            else
-                maxSpeed = 120;
+            printf("Module 3 Angle and Speed and turns: %f, %.0f, %i\n", module3.velocity[0].magnitude, module3.velocity[0].angle * RAD_TO_DEG, module3.turns[1]);*/
+            
+            {
+                static boolean speedState = false;
+                static boolean xLastState = Controller::getButton(XINPUT_GAMEPAD_X);
+                boolean xState = Controller::getButton(XINPUT_GAMEPAD_X);
+
+                if (xState != xLastState)
+                {
+                    xLastState = xState;
+                    if (xState == true)
+                        speedState = !speedState;
+                }
+                if (speedState)
+                    maxSpeed = 120;
+                else
+                    maxSpeed = 40;
+            }
 
             Radio::Packet packet = {};
             SETFLAG(packet.flags, Radio::FLAG_ENABLE);
@@ -144,8 +145,6 @@ int main() {
             module2.cacheVelocity();
             module3.cacheVelocity();
 
-            angleOffset = 10.0f *DEG_TO_RAD;
-
             if (Radio::ready())
                 Radio::sendControlPacket(packet);
 
@@ -157,7 +156,7 @@ int main() {
                 Radio::ResponsePacket rxPacket = Radio::getLastPacket();
 
                 botAngle = rxPacket.angle;
-                //printf("%f  %f\n", botAngle, botAngleOffset);
+                printf("%f  %f\n", botAngle, botAngleOffset);
                 if (Controller::getButton(XINPUT_GAMEPAD_Y))
                     botAngleOffset = botAngle;
 
@@ -182,6 +181,8 @@ int main() {
                     }
                 }
             }
+
+            angleOffset = botAngle - botAngleOffset;
 
             if (Controller::getButton(XINPUT_GAMEPAD_B))
             {

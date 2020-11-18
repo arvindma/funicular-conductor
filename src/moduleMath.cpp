@@ -20,7 +20,12 @@ void Module::cacheVelocity()
 }
 
 PolarCoordinates CartesianCoordinates::toPolar() {
-    PolarCoordinates returnCoord(sqrt(x * x + y * y), ConstrainedAngle(atan2(y, x)));
+    float angle;
+    if (x < 0.01 && y < 0.01)
+        angle = 0.0f;
+    else
+        angle = ConstrainedAngle(atan2(y, x));
+    PolarCoordinates returnCoord(sqrt(x * x + y * y), angle);
     return returnCoord;
 }
 
@@ -37,7 +42,7 @@ Velocity PolarCoordinates::toVelocity() {
 
 PolarCoordinates polarAddition(PolarCoordinates coord1, PolarCoordinates coord2)
 {   
-    if (coord1.magnitude > 0.01 && coord2.magnitude > 0.01) {
+    if (coord1.magnitude != 0 && coord2.magnitude != 0) {
         CartesianCoordinates temp1 = coord1.toCartesian();
         CartesianCoordinates temp2 = coord2.toCartesian();
 
@@ -45,18 +50,12 @@ PolarCoordinates polarAddition(PolarCoordinates coord1, PolarCoordinates coord2)
 
         return returnCart.toPolar();
     }
-    else if (coord1.magnitude < 0.01 & coord2.magnitude > 0.01) {
+    else if (coord1.magnitude < 0.01f) {
         return coord2;
     }
-    else {
-        return coord1;
-    }
-    
-
+    return coord1;
     
 }
-
-
 
 
 Velocity joystickToVelocity(float normalizedJoystick, float angle)
@@ -83,14 +82,16 @@ float ConstrainedAngle(float angle)
 
 void Module::botToWheelVelocity(PolarCoordinates rotationCenter, float rotationSpeed, Velocity translationSpeed)
 { // Velocities should be normalized from 0 to 1
-    rotationCenter.magnitude *= -1;
-    PolarCoordinates positionTemp(position.magnitude, position.angle);
-    PolarCoordinates deltacmp = polarAddition(positionTemp, rotationCenter);
+    PolarCoordinates deltacmp = polarAddition(position, -rotationCenter);
 
-    rotationSpeed /= MODULEP_MAGNITUDE;
-    Velocity rotationVector(positionTemp.magnitude * abs(rotationSpeed), positionTemp.getConstrainedAngle() - (F_PI / 2 * rotationSpeed / abs(rotationSpeed)));
+    float k = 1 / (3*MODULEP_MAGNITUDE);
+
+    Velocity rotationVector(position.magnitude * abs(rotationSpeed) * k, position.getConstrainedAngle() - (F_PI / 2 * rotationSpeed / abs(rotationSpeed)));
+    if (rotationSpeed == 0.0f) {
+        rotationVector.angle = 0.0f;
+    }
     
-    Velocity velocityOutput = polarAddition(rotationVector, translationSpeed).toVelocity();
+    Velocity velocityOutput = polarAddition(translationSpeed, rotationVector).toVelocity();
 
     if (velocityOutput.magnitude > 1)
         normalizingFactor = velocityOutput.magnitude;
