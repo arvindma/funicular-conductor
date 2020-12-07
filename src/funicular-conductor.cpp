@@ -110,8 +110,8 @@ int main() {
 
             
 
-           /* clear();
-            printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity[0].magnitude, module1.velocity[0].angle * RAD_TO_DEG, module1.turns[1]);
+            //clear();
+            /*printf("Module 1 Angle and Speed and turns: %f, %.0f, %i\n", module1.velocity[0].magnitude, module1.velocity[0].angle * RAD_TO_DEG, module1.turns[1]);
             printf("Module 2 Angle and Speed and turns: %f, %.0f, %i\n", module2.velocity[0].magnitude, module2.velocity[0].angle * RAD_TO_DEG, module2.turns[1]);
             printf("Module 3 Angle and Speed and turns: %f, %.0f, %i\n", module3.velocity[0].magnitude, module3.velocity[0].angle * RAD_TO_DEG, module3.turns[1]);*/
             
@@ -127,7 +127,7 @@ int main() {
                         speedState = !speedState;
                 }
                 if (speedState)
-                    maxSpeed = 120;
+                    maxSpeed = 150;
                 else
                     maxSpeed = 40;
             }

@@ -21,7 +21,7 @@ void Module::cacheVelocity()
 
 PolarCoordinates CartesianCoordinates::toPolar() {
     float angle;
-    if (x < 0.01 && y < 0.01)
+    if (x == 0.0f && y == 0.0f)
         angle = 0.0f;
     else
         angle = ConstrainedAngle(atan2(y, x));
@@ -42,18 +42,15 @@ Velocity PolarCoordinates::toVelocity() {
 
 PolarCoordinates polarAddition(PolarCoordinates coord1, PolarCoordinates coord2)
 {   
-    if (coord1.magnitude != 0 && coord2.magnitude != 0) {
-        CartesianCoordinates temp1 = coord1.toCartesian();
-        CartesianCoordinates temp2 = coord2.toCartesian();
+  
+    CartesianCoordinates temp1 = coord1.toCartesian();
+    CartesianCoordinates temp2 = coord2.toCartesian();
 
-        CartesianCoordinates returnCart(temp1.x + temp2.x, temp1.y + temp2.y);
+    CartesianCoordinates returnCart(temp1.x + temp2.x, temp1.y + temp2.y);
 
-        return returnCart.toPolar();
-    }
-    else if (coord1.magnitude < 0.01f) {
-        return coord2;
-    }
-    return coord1;
+    return returnCart.toPolar();
+
+    
     
 }
 
@@ -84,9 +81,9 @@ void Module::botToWheelVelocity(PolarCoordinates rotationCenter, float rotationS
 { // Velocities should be normalized from 0 to 1
     PolarCoordinates deltacmp = polarAddition(position, -rotationCenter);
 
-    float k = 1 / (3*MODULEP_MAGNITUDE);
+    float k = 1 / (2*MODULEP_MAGNITUDE);
 
-    Velocity rotationVector(position.magnitude * abs(rotationSpeed) * k, position.getConstrainedAngle() - (F_PI / 2 * rotationSpeed / abs(rotationSpeed)));
+    Velocity rotationVector(deltacmp.magnitude * abs(rotationSpeed) * k, deltacmp.getConstrainedAngle() - (F_PI / 2 * rotationSpeed / abs(rotationSpeed)));
     if (rotationSpeed == 0.0f) {
         rotationVector.angle = 0.0f;
     }
